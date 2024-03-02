@@ -4,8 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ALADIN Stores</title>
-    <link rel="icon" href="Infoproduct/logo.png" type="image/x-icon">
+    <title>2HM Stores</title>
     <link rel="stylesheet" href="../static/css/index.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
         integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
@@ -16,29 +15,6 @@
 <body class="body">
     <div class="no">
     </div>
-        <div style="margin-top: 40px; text-align: center;">
-            {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-            {% for cat, mess in messages %}
-            {% if cat == "error" %}
-            <div style="color: red;" class="alert alert-danger alert-dismissable fade show" role="alert">
-                {{ mess }}
-                <button type="button" class="close" data-dismiss="alert">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            {% else %}
-            <div class="alert alert-success alert-dismissable fade show" role="alert">
-                {{ mess }}
-                <button type="button" class="close" data-dismiss="alert">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            {% endif %}
-            {% endfor %}
-            {% endif %}
-            {% endwith %}
-        </div>
     <div class="ship">
         <div class="wrap">
             <div>
@@ -370,7 +346,14 @@
                     <ul class="help_ul">
                         <li><a href="">Trợ giúp</a></li>
                         <li><a href="">Trình theo dõi đơn hàng</a></li>
-                        <li><a href="http://127.0.0.1:5000/login">Đăng nhập</a></li>
+                        <li>{% if current_user.is_authenticated %}
+                        <!-- Nếu người dùng đã đăng nhập, hiển thị nút hoặc liên kết "Đăng xuất" -->
+                        <a href="{{ url_for('user.logout') }}">Đăng xuất</a>
+                        {% else %}
+                        <!-- Nếu người dùng chưa đăng nhập, hiển thị nút hoặc liên kết "Đăng nhập" -->
+                        <a href="{{ url_for('user.login') }}">Đăng nhập</a>
+                        {% endif %}</li>
+                        
                         <li class="language_select">
                             <i class="fa-solid fa-chevron-down"></i>
                             <div class="_language_change">
@@ -395,7 +378,32 @@
                         <input type="text" name="search" id="search" placeholder="Tìm kiếm">
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </form>
+                    {% if current_user.is_authenticated %}
+                    <style>
+                        #user_name:hover #user_name_popup {
+                            display: block;
+                        }
+                    
+                        #user_name_popup {
+                            display: none;
+                            position: absolute;
+                            bottom: -35px;
+                            left: 10px;
+                            right: 0;
+                            color: red;
+                        }
+                    
+                        #block:hover {
+                            color: red;
+                        }
+                    </style>
+                    <div id="user_name" style="position: relative;">
+                        <p id="block" style="font-size: 25px; padding-left: 10px">{{ current_user.user_name[:1] }}</p>
+                        <p id="user_name_popup">{{ current_user.user_name }}</p>
+                    </div>
+                    {% else %}
                     <i class="fa-regular fa-user"></i>
+                    {% endif %}
                     <i class="fa-regular fa-heart"></i>
                     <i class="fa-solid fa-bag-shopping"></i>
                 </div>
@@ -532,8 +540,8 @@
             <img src="../static/img/faker1.jpg"
                 alt="">
         </div>
-        <div class="intro">
-            <div class="_wrap">
+        <div class="intro" style="position: relative;">
+            <div class="_wrap" >
                 <div>
                     <h3 style="color: #007bc6;">SKT T1 FAKER</h3>
                     <h1>Tự tin tỏa sáng với phong cách của bạn</h1>
@@ -550,13 +558,33 @@
                         <a href="">
                             <div class="button">
                                 <div class="_main_button">
-                                    <p>MUA ĐỒ NỮ<i class="fa-solid fa-arrow-right"></i></p>
+                                    <p>MUA ĐỒ NỮ <i class="fa-solid fa-arrow-right"></i></p>
                                 </div>
                             </div>
                         </a>
                     </div>
-                </div>
+                </div>   
             </div>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            <div id="alert" class="alert alert-{{ category }}" style="position: absolute;bottom: 250px; right: 10px;">
+                <div class="button">
+                    <div class="_main_button">
+                        <p>{{ message }} <i class="fa-solid fa-user-check"></i> </p>
+                    </div>
+                </div>  
+            </div>
+            <script>
+                // Hàm tự động biến mất thông báo sau một khoảng thời gian
+                setTimeout(function () {
+                    var alertDiv = document.getElementById('alert');
+                    alertDiv.style.display = 'none';
+                }, 3000); // 3s
+            </script>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
         </div>
     </div>
     <div class="Ex">
@@ -565,159 +593,25 @@
                 <p>Members's Exculusive</p>
             </div>
             <div class="image-slider">
+                {% for product, type_product in men_products %}
                 <a href="Infoproduct/Info.html">
+                    
                     <div class="image-item">
                         <div class="image">
-                            <img src="../static/img/product-5.jpg"
-                                alt="" />
-                            <p>3.600.000<sup>đ</sup></p>
+                            <img src="../static/img/{{product.image}}" alt="" />
+                            <p>{{product.price}}<sup>đ</sup></p>
                         </div>
                         <div class="cost">
-                            <p>Áo kẻ sọc xanh</p>
-                            <p>Nam</p>
+                            <p>{{product.name_product}}</p>
+                            <p>{{type_product}}</p>
                             <p>New</p>
                         </div>
                         <div class="_border">
-
                         </div>
-                    </div>
+                    </div>   
                 </a>
-                <a href="Infoproduct/Info.html">
-                    <div class="image-item">
-                        <div class="image">
-                            <img src="../static/img/product-1.jpg"
-                                alt="" />
-                            <p>3.600.000<sup>đ</sup></p>
-                        </div>
-                        <div class="cost">
-                            <p>Áo phông xanh</p>
-                            <p>Nam</p>
-                            <p>New</p>
-                        </div>
-                        <div class="_border">
-
-                        </div>
-                    </div>
-                </a>
-                <a href="Infoproduct/Info.html">
-                    <div class="image-item">
-                        <div class="image">
-                            <img src="../static/img/product-2.jpg"
-                                alt="" />
-                            <p>3.600.000<sup>đ</sup></p>
-                        </div>
-                        <div class="cost">
-                            <p>Áo phông nỉ có mũ</p>
-                            <p>Nam</p>
-                            <p>New</p>
-                        </div>
-                        <div class="_border">
-
-                        </div>
-                    </div>
-                </a>
-                <a href="Infoproduct/Info.html">
-                    <div class="image-item">
-                        <div class="image">
-                            <img src="../static/img/product-3.jpg"
-                                alt="" />
-                            <p>3.600.000<sup>đ</sup></p>
-                        </div>
-                        <div class="cost">
-                            <p>Áo phông hồng phong cách</p>
-                            <p>Nam</p>
-                            <p>New</p>
-                        </div>
-                        <div class="_border">
-
-                        </div>
-                    </div>
-                </a>
-                <a href="Infoproduct/Info.html">
-                    <div class="image-item">
-                        <div class="image">
-                            <img src="../static/img/product-4.jpg"
-                                alt="" />
-                            <p>3.600.000<sup>đ</sup></p>
-                        </div>
-                        <div class="cost">
-                            <p>Áo sơ mi trắng</p>
-                            <p>Nam</p>
-                            <p>New</p>
-                        </div>
-                        <div class="_border">
-
-                        </div>
-                    </div>
-                </a>
-                <a href="Infoproduct/Info.html">
-                    <div class="image-item">
-                        <div class="image">
-                            <img src="../static/img/product-6.jpg"
-                                alt="" />
-                            <p>3.600.000<sup>đ</sup></p>
-                        </div>
-                        <div class="cost">
-                            <p>Nam hoodie</p>
-                            <p>Nam</p>
-                            <p>New</p>
-                        </div>
-                        <div class="_border">
-
-                        </div>
-                    </div>
-                </a>
-                <a href="Infoproduct/Info.html">
-                    <div class="image-item">
-                        <div class="image">
-                            <img src="../static/img/product-7.jpg"
-                                alt="" />
-                            <p>3.600.000<sup>đ</sup></p>
-                        </div>
-                        <div class="cost">
-                            <p>Áo phông xanh </p>
-                            <p>Nam</p>
-                            <p>New</p>
-                        </div>
-                        <div class="_border">
-
-                        </div>
-                    </div>
-                </a>
-                <a href="Infoproduct/Info.html">
-                    <div class="image-item">
-                        <div class="image">
-                            <img src="../static/img/product-8.jpg"
-                                alt="" />
-                            <p>3.600.000<sup>đ</sup></p>
-                        </div>
-                        <div class="cost">
-                            <p>Áo giữ nhiệt</p>
-                            <p></p>
-                            <p>New</p>
-                        </div>
-                        <div class="_border">
-
-                        </div>
-                    </div>
-                </a>
-                <a href="Infoproduct/Info.html">
-                    <div class="image-item">
-                        <div class="image">
-                            <img src="../static/img/product-9.jpg"
-                                alt="" />
-                            <p>3.600.000<sup>đ</sup></p>
-                        </div>
-                        <div class="cost">
-                            <p>Áo phông trắng</p>
-                            <p>Nam </p>
-                            <p>New</p>
-                        </div>
-                        <div class="_border">
-
-                        </div>
-                    </div>
-                </a>
+                {% endfor %}
+                
             </div>
         </div>
     </div>
@@ -758,214 +652,24 @@
             <div class="more">
                 <div class="s">
                     <div class="image-slider">
+                        {% for product, type_product in women_products %}
                         <a href="Infoproduct/Info.html">
+                        
                             <div class="image-item">
                                 <div class="image">
-                                    <img src="../static/img/product-11.jpg"
-                                        alt="" />
-                                    <p>3.600.000<sup>đ</sup></p>
+                                    <img src="../static/img/{{product.image}}" alt="" />
+                                    <p>{{product.price}}<sup>đ</sup></p>
                                 </div>
                                 <div class="cost">
-                                    <p>Đầm bó</p>
-                                    <p>Nữ</p>
+                                    <p>{{product.name_product}}</p>
+                                    <p>{{type_product}}</p>
                                     <p>New</p>
                                 </div>
                                 <div class="_border">
-
                                 </div>
                             </div>
                         </a>
-                        <a href="Infoproduct/Info.html">
-                            <div class="image-item">
-                                <div class="image">
-                                    <img src="../static/img/product-12.jpg "
-                                        alt="" />
-                                    <p>3.600.000<sup>đ</sup></p>
-                                </div>
-                                <div class="cost">
-                                    <p>Váy công chúa</p>
-                                    <p>Nữ</p>
-                                    <p>New</p>
-                                </div>
-                                <div class="_border">
-
-                                </div>
-                            </div>
-                        </a>
-                        <a href="Infoproduct/Info.html">
-                            <div class="image-item">
-                                <div class="image">
-                                    <img src="../static/img/product-13.jpg"
-                                        alt="" />
-                                    <p>3.600.000<sup>đ</sup></p>
-                                </div>
-                                <div class="cost">
-                                    <p>Nữ Originals Áo Polo Originals</p>
-                                    <p>Nữ Originals</p>
-                                    <p>New</p>
-                                </div>
-                                <div class="_border">
-
-                                </div>
-                            </div>
-                        </a>
-                        <a href="Infoproduct/Info.html">
-                            <div class="image-item">
-                                <div class="image">
-                                    <img src="../static/img/product-14.jpg"
-                                        alt="" />
-                                    <p>3.600.000<sup>đ</sup></p>
-                                </div>
-                                <div class="cost">
-                                    <p>Váy trắng công chúa</p>
-                                    <p>Nữ</p>
-                                    <p>New</p>
-                                </div>
-                                <div class="_border">
-
-                                </div>
-                            </div>
-                        </a>
-                        <a href="Infoproduct/Info.html">
-                            <div class="image-item">
-                                <div class="image">
-                                    <img src="../static/img/product-15.jpg"
-                                        alt="" />
-                                    <p>3.600.000<sup>đ</sup></p>
-                                </div>
-                                <div class="cost">
-                                    <p>Váy công chúa xòe</p>
-                                    <p>Nữ</p>
-                                    <p>New</p>
-                                </div>
-                                <div class="_border">
-
-                                </div>
-                            </div>
-                        </a>
-                        <a href="Infoproduct/Info.html">
-                            <div class="image-item">
-                                <div class="image">
-                                    <img src="../static/img/product-16.jpg"
-                                        alt="" />
-                                    <p>3.600.000<sup>đ</sup></p>
-                                </div>
-                                <div class="cost">
-                                    <p>Đầm bó kẻ trắng đen</p>
-                                    <p>Nữ</p>
-                                    <p>New</p>
-                                </div>
-                                <div class="_border">
-
-                                </div>
-                            </div>
-                        </a>
-                        <a href="Infoproduct/Info.html">
-                            <div class="image-item">
-                                <div class="image">
-                                    <img src="../static/img/product-29.jpg"
-                                        alt="" />
-                                    <p>3.600.000<sup>đ</sup></p>
-                                </div>
-                                <div class="cost">
-                                    <p>áo khoác mỏng nhẹ</p>
-                                    <p>Nữ</p>
-                                    <p>New</p>
-                                </div>
-                                <div class="_border">
-
-                                </div>
-                            </div>
-                        </a>
-                        <a href="Infoproduct/Info.html">
-                            <div class="image-item">
-                                <div class="image">
-                                    <img src="../static/img/product-30.jpg"
-                                        alt="" />
-                                    <p>3.600.000<sup>đ</sup></p>
-                                </div>
-                                <div class="cost">
-                                    <p>Áo sơ mi đen quyến rũ</p>
-                                    <p>Nữ </p>
-                                    <p>New</p>
-                                </div>
-                                <div class="_border">
-
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-                <div class="s">
-                    <div class="classify">
-                        <a href="Infoproduct/Info.html">
-                            <div class="image-item" id="convert_img">
-                                <div class="image">
-                                    <img src="../static/img/old1.jpg"
-                                        alt="" />
-                                    <p>3.600.000<sup>đ</sup></p>
-                                </div>
-                                <div class="cost">
-                                    <p>Nam Chạy Giày Adizero Takumi Sen 9</p>
-                                    <p>Nam Chạy</p>
-                                    <p>New</p>
-                                </div>
-                                <div class="_border">
-
-                                </div>
-                            </div>
-                        </a>
-                        <a href="Infoproduct/Info.html">
-                            <div class="image-item">
-                                <div class="image">
-                                    <img src="../static/img/old2.jpg"
-                                        alt="" />
-                                    <p>3.600.000<sup>đ</sup></p>
-                                </div>
-                                <div class="cost">
-                                    <p>Nam Originals Quần Tập Khởi Động Bóng Rổ</p>
-                                    <p>Nam Originals</p>
-                                    <p>New</p>
-                                </div>
-                                <div class="_border">
-
-                                </div>
-                            </div>
-                        </a>
-                        <a href="Infoproduct/Info.html">
-                            <div class="image-item">
-                                <div class="image">
-                                    <img src="../static/img/old3.jpg"
-                                        alt="" />
-                                    <p>3.600.000<sup>đ</sup></p>
-                                </div>
-                                <div class="cost">
-                                    <p>Nữ Originals Quần Tập Khởi Động Tricot Originals</p>
-                                    <p>Nữ Originals</p>
-                                    <p>New</p>
-                                </div>
-                                <div class="_border">
-
-                                </div>
-                            </div>
-                        </a>
-                        <a href="Infoproduct/Info.html">
-                            <div class="image-item">
-                                <div class="image">
-                                    <img src="../static/img/old4.jpg"
-                                        alt="" />
-                                    <p>3.600.000<sup>đ</sup></p>
-                                </div>
-                                <div class="cost">
-                                    <p>Nữ Originals OG WARM UP JKT</p>
-                                    <p>Nữ Originals</p>
-                                    <p>New</p>
-                                </div>
-                                <div class="_border">
-
-                                </div>
-                            </div>
-                        </a>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
