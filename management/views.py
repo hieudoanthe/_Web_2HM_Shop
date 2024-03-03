@@ -12,7 +12,7 @@ views = Blueprint("views", __name__)
 # Trang chủ
 @views.route("/home", methods=["GET","POST"])
 @views.route("/", methods=["GET","POST"])
-def home():
+def home(): 
     men_products = []
     women_products = []
     products = Product.query.all()
