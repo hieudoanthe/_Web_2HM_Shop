@@ -7,7 +7,7 @@ from django.shortcuts import render
 from django.db.models import Q
 from management.models import Product, Detail
 
-views = Blueprint("views", _name_)
+views = Blueprint("views", __name__)
 
 # Trang chủ
 @views.route("/home", methods=["GET","POST"])
