@@ -13,27 +13,39 @@ user = Blueprint("user", __name__)
 @user.route("/login",methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        email = request.form.get("email")
-        password = request.form.get("password")
-        user = User.query.filter_by(email = email).first()
+        data = request.form.get("data")
+        password = request.form.get("password") 
+        if data.isdigit():
+            phone_number = data
+            email = None
+        else:
+            email = data
+            phone_number = None
+
+        user = None
+        if email:
+            user = User.query.filter_by(email=email).first()
+        elif phone_number:
+            user = User.query.filter_by(phone_number=phone_number).first()
+
         if user:
             if check_password_hash(user.password, password):
                 session.permanent = True
-                login_user(user,remember=True)
-                flash("Logged is success !",category="success")
+                login_user(user, remember=True)
+                flash("Logged in successfully!", category="success")
                 return redirect(url_for("views.home"))
             else:
-                flash("Password is wrong :)",category="error")
+                flash("Password is incorrect!", category="error")
         else:
-            flash("User doesn't exist !",category="error")
+            flash("User does not exist!", category="error")
+
     messages = get_flashed_messages()
-    return render_template("login.html", user = current_user)
+    return render_template("login.html", user=current_user)
 
 @user.route("/signup",methods=["GET", "POST"])
 def signup():
     if request.method == "POST":
         data = request.form.get("data")
-        phone_number = request.form.get("email")
         user_name = request.form.get("user_name")
         password = request.form.get("password")
         confirm_password = request.form.get("confirm_password")
@@ -44,29 +56,36 @@ def signup():
         else:
             email = data
             phone_number = None
-
-        user = User.query.filter(or_(User.email == email, User.phone_number == phone_number)).first()
-        if user:
-            flash("User existed !", category="error")
-        elif len(email) < 4:
-            flash("Email sort !", category="error")
+        if email and User.query.filter_by(email=email).first():
+            flash("Email already exists!", category="error")
+        elif phone_number and User.query.filter_by(phone_number=phone_number).first():
+            flash("Phone number already exists!", category="error")
+        elif len(data) < 4:
+            flash("Invalid email or phone number!", category="error")
         elif len(password) < 7:
-            flash("Password sort !",category="error")
+            flash("Password is too short!", category="error")
         elif password != confirm_password:
-            flash("Password does not match !",category="error")
-        else:  
-            password = generate_password_hash(password, method="sha256")
-            new_user = User(email=email, phone_number = phone_number, password=password, user_name=user_name)
-            try:
-                db.session.add(new_user)
-                db.session.commit()
-                login_user(new_user,remember=True)
-                flash("User created !", category="success")
-                return redirect(url_for("views.home"))   
-            except:
-                "error"
+            flash("Password does not match!", category="error")
+        else:
+            existing_user = User.query.filter_by(user_name=user_name).first()
+            if existing_user:
+                flash("Username already exists! Please choose another one.", category="error")
+            else:
+                password = generate_password_hash(password, method="scrypt")
+                new_user = User(email=email, phone_number=phone_number, password=password, user_name=user_name)
+                try:
+                    db.session.add(new_user)
+                    db.session.commit()
+                    login_user(new_user, remember=True)
+                    flash("User created!", category="success")
+                    return redirect(url_for("user.login"))   
+                except Exception as e:
+                    flash(f"Error occurred: {str(e)}", category="error")
+
     messages = get_flashed_messages()
     return render_template("signup.html", user=current_user)
+
+
 
 @user.route("/logout")
 @login_required

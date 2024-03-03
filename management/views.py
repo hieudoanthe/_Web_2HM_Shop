@@ -5,6 +5,7 @@ from .import db
 import json
 from django.shortcuts import render
 from django.db.models import Q
+from management.models import Product, Detail
 
 views = Blueprint("views", __name__)
 
@@ -12,17 +13,18 @@ views = Blueprint("views", __name__)
 @views.route("/home", methods=["GET","POST"])
 @views.route("/", methods=["GET","POST"])
 def home():
-    if request.method == "POST":
-        note = request.form.get("note")
-        if len(note) < 1:
-            flash("Note sort:)",category="error")
-        else:
-            new_note = Note(data = note, user_id = current_user.id)
-            db.session.add(new_note)
-            db.session.commit()
-            flash("Note added !",category="success")
+    men_products = []
+    women_products = []
+    products = Product.query.all()
+    for product in products:
+        details = Detail.query.filter_by(imei=product.imei).all()
+        for detail in details:
+            if detail.type_product == 'Nam_':
+                men_products.append((product, detail.type_product))
+            elif detail.type_product == 'Nữ_':
+                women_products.append((product, detail.type_product))
     messages = get_flashed_messages()
-    return render_template("index.html", user=current_user if current_user.is_authenticated else None)
+    return render_template("index.html",men_products=men_products, women_products=women_products, user=current_user if current_user.is_authenticated else None)
 
 # Nam
 @views.route("/male_page", methods=["GET","POST"])
