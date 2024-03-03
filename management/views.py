@@ -30,13 +30,58 @@ def home():
 @views.route("/male_page", methods=["GET","POST"])
 def male_page():
     return render_template('male_page.html')
+    # Giày nam
+@views.route("/shoemale_page", methods=["GET","POST"])
+def shoemale_page():
+    return render_template('shoemale_page.html')
+@views.route("/fashion_male", methods=["GET","POST"])
+    # Thời trang nam
+def fashion_male():
+    return render_template('fashion_male.html')
+
+
 
 # Nữ
 @views.route("/female_page", methods=["GET","POST"])
 def female_page():
     return render_template('female_page.html')
+    # Giày nữ
+@views.route("/shoefemale_page", methods=["GET","POST"])
+def shoefemale_page():
+    return render_template('shoefemale_page.html') 
+    # Thời trang nữ
+@views.route("/fashion_female", methods=["GET","POST"])
+def fashion_female():
+    return render_template('fashion_female.html')
 
+
+    
 # Trẻ em
 @views.route("/kid_page", methods=["GET","POST"])
 def kid_page():
     return render_template('kid_page.html')
+    # Giày trẻ em
+@views.route("/fashion_kid", methods=["GET","POST"])
+def fashion_kid():
+    return render_template('fashion_kid.html')
+    # Thời trang trẻ em
+@views.route("/kid_page", methods=["GET","POST"])
+def kid_page():
+    return render_template('kid_page.html')
+
+
+
+# Infomation
+@views.route("/infomation", methods=["GET","POST"])
+def infomation():
+    return render_template('ifo.html')
+
+# Cart
+@views.route("/cart", methods=["GET","POST"])
+def cart():
+    return render_template('cart.html')
+
+# Order
+@views.route("/order", methods=["GET","POST"])
+def order():
+    return render_template('order.html')
