@@ -61,13 +61,13 @@ def fashion_female():
 def kid_page():
     return render_template('kid_page.html')
     # Giày trẻ em
+@views.route("/shoekid_page", methods=["GET","POST"])
+def shoekid_page():
+    return render_template('shoekid_page.html')
+    # Thời trang trẻ em
 @views.route("/fashion_kid", methods=["GET","POST"])
 def fashion_kid():
     return render_template('fashion_kid.html')
-    # Thời trang trẻ em
-@views.route("/kid_page", methods=["GET","POST"])
-def kid_page():
-    return render_template('kid_page.html')
 
 
 
