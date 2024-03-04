@@ -602,11 +602,15 @@
             </div>
             <div class="image-slider">
                 {% for product, type_product in men_products %}
-                <a href="http://127.0.0.1:5000/infomation">
-                    
+                <!-- <a href="http://127.0.0.1:5000/infomation"> -->
+                    <a href="{{ url_for('views.infomation', name_product=product.name_product|urlencode) }}">
                     <div class="image-item">
                         <div class="image">
-                            <img src="../static/img/{{product.image}}" alt="" />
+                            {% if first_images[loop.index0] %}
+                            <img src="../static/img/{{ first_images[loop.index0] }}" alt="" />
+                            {% else %}
+                            <img src="../static/img/default_image.jpg" alt="" /> <!-- Nếu không có ảnh -->
+                            {% endif %}
                             <p>{{product.price}}<sup>đ</sup></p>
                         </div>
                         <div class="cost">
@@ -618,8 +622,7 @@
                         </div>
                     </div>   
                 </a>
-                {% endfor %}
-                
+                {% endfor %}               
             </div>
         </div>
     </div>
@@ -665,7 +668,11 @@
                         
                             <div class="image-item">
                                 <div class="image">
-                                    <img src="../static/img/{{product.image}}" alt="" />
+                                    {% if first_images[loop.index0 + men_products|length] %}
+                                    <img src="../static/img/{{ first_images[loop.index0 + men_products|length] }}" alt="" />
+                                    {% else %}
+                                    <img src="../static/img/default_image.jpg" alt="" /> <!-- Nếu không có ảnh -->
+                                    {% endif %}
                                     <p>{{product.price}}<sup>đ</sup></p>
                                 </div>
                                 <div class="cost">

@@ -5,13 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>2HM Stores</title>
-    <link rel="stylesheet" href="../static/css/Info.css">
+    <link rel="stylesheet" href="../static/css/info.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
         integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
 </head>
-
 <body class="body">
     <div class="no">
     </div>
@@ -519,41 +518,25 @@
                     </li>
                 </ul>
                 <div class="im">
+                    {% for image in images %}
+                        {% if loop.index >= 1 and loop.index <= 4 %}
                     <div class="cover">
-                        <img src="https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/2e86d2d18f224468bf21a5ae627d144c_9366/Giay_Golf_BAPE_x_adidas_Stan_Smith_trang_IG5916_01_standard.jpg"
+                        <img src="../static/img/{{image}}"
                             alt="">
                     </div>
-                    <div class="cover">
-                        <img src="https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/2e86d2d18f224468bf21a5ae627d144c_9366/Giay_Golf_BAPE_x_adidas_Stan_Smith_trang_IG5916_01_standard.jpg"
-                            alt="">
-                    </div>
-                    <div class="cover">
-                        <img src="https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/2e86d2d18f224468bf21a5ae627d144c_9366/Giay_Golf_BAPE_x_adidas_Stan_Smith_trang_IG5916_01_standard.jpg"
-                            alt="">
-                    </div>
-                    <div class="cover">
-                        <img src="https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/2e86d2d18f224468bf21a5ae627d144c_9366/Giay_Golf_BAPE_x_adidas_Stan_Smith_trang_IG5916_01_standard.jpg"
-                            alt="">
-                    </div>
+                        {% endif %}
+                    {% endfor %}
                 </div>
                 <div class="toggle">
                     <div class="im">
+                    {% for image in images %}
+                        {% if loop.index > 4 and loop.index <= 8 %}
                         <div class="cover">
-                            <img src="https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/2e86d2d18f224468bf21a5ae627d144c_9366/Giay_Golf_BAPE_x_adidas_Stan_Smith_trang_IG5916_01_standard.jpg"
+                            <img src="../static/img/{{image}}"
                                 alt="">
                         </div>
-                        <div class="cover">
-                            <img src="https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/2e86d2d18f224468bf21a5ae627d144c_9366/Giay_Golf_BAPE_x_adidas_Stan_Smith_trang_IG5916_01_standard.jpg"
-                                alt="">
-                        </div>
-                        <div class="cover">
-                            <img src="https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/2e86d2d18f224468bf21a5ae627d144c_9366/Giay_Golf_BAPE_x_adidas_Stan_Smith_trang_IG5916_01_standard.jpg"
-                                alt="">
-                        </div>
-                        <div class="cover">
-                            <img src="https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/2e86d2d18f224468bf21a5ae627d144c_9366/Giay_Golf_BAPE_x_adidas_Stan_Smith_trang_IG5916_01_standard.jpg"
-                                alt="">
-                        </div>
+                        {% endif %}
+                    {% endfor %}
                     </div>
                 </div>
                 <div class="show_more">
@@ -588,8 +571,12 @@
                             </span>
                         </div>
                         <div class="img_Ds">
-                            <img src="https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/2e86d2d18f224468bf21a5ae627d144c_9366/Giay_Golf_BAPE_x_adidas_Stan_Smith_trang_IG5916_01_standard.jpg"
+                            {% for image in images %}
+                                {% if loop.index == 1 %}
+                            <img src="../static/img/{{image}}"
                                 alt="">
+                                {% endif %}
+                            {% endfor %}
                         </div>
                     </div>
                 </div>
@@ -943,8 +930,8 @@
         <div class="right_content">
             <div>
                 <p>Originals</p>
-                <h1>GIÀY GOLF BAPE X ADIDAS STAN SMITH</h1>
-                <p>4.200.000₫</p>
+                <h1>{{product.name_product}}</h1>
+                <p>{{product.price}}</p>
             </div>
             <div>
                 <p style="font-weight: 300;">
@@ -958,12 +945,12 @@
             </div>
             <div>
                 <h3>
-                    MỞ BÁN VÀO SATURDAY, OCTOBER 21ST TẠI 10:00
+                    MỞ BÁN VÀO SATURDAY, OCTOBER 21ST TẠI 2HM STORE
                 </h3>
                 <div class="button">
                     <a href="">
                         <div class="_main_button">
-                            <p href="">ĐĂNG KÝ MIỄN PHÍ <i class="fa-solid fa-arrow-right"></i></p>
+                            <p href="">THÊM VÀO GIỎ HÀNG <i class="fa-solid fa-arrow-right"></i></p>
                         </div>
                     </a>
                 </div>
@@ -1092,7 +1079,7 @@
     <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="https://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
-    <script src="Info.js"></script>
+    <script src="../static/js/info.js"></script>
 </body>
 
 </html>

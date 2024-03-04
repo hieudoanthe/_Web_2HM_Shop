@@ -6,6 +6,9 @@ import json
 from django.shortcuts import render
 from django.db.models import Q
 from management.models import Product, Detail
+from urllib.parse import quote
+from urllib.parse import quote_plus
+from urllib.parse import unquote_plus
 
 views = Blueprint("views", __name__)
 
@@ -18,13 +21,26 @@ def home():
     products = Product.query.all()
     for product in products:
         details = Detail.query.filter_by(imei=product.imei).all()
+        
         for detail in details:
             if detail.type_product == 'Nam_':
                 men_products.append((product, detail.type_product))
             elif detail.type_product == 'Nữ_':
                 women_products.append((product, detail.type_product))
+    first_images = [get_first_image(product.image) for product, _ in men_products]
+    first_images += [get_first_image(product.image) for product, _ in women_products]
     messages = get_flashed_messages()
-    return render_template("index.html",men_products=men_products, women_products=women_products, user=current_user if current_user.is_authenticated else None)
+    return render_template("index.html",men_products=men_products, women_products=women_products,first_images=first_images, user=current_user if current_user.is_authenticated else None)
+def get_first_image(image):
+    # Kiểm tra nếu đường dẫn ảnh không rỗng
+    if image:
+        # Tách chuỗi đường dẫn ảnh thành một danh sách
+        image_list = image.split(';')
+        # Trả về tên của ảnh đầu tiên
+        return image_list[0]
+    # Trả về None nếu không có ảnh nào
+    return None
+
 
 # Nam
 @views.route("/male_page", methods=["GET","POST"])
@@ -72,14 +88,22 @@ def fashion_kid():
 
 
 # Infomation
-@views.route("/infomation", methods=["GET","POST"])
-def infomation():
-    return render_template('ifo.html')
+@views.route('/infomation/<string:name_product>')
+def infomation(name_product):
+    decoded_name_product = unquote_plus(name_product)
+    product = Product.query.filter_by(name_product=decoded_name_product).first()
+    if product:
+        images = product.image.split(';')
+        return render_template('info.html', product=product, images=images)
+    else:
+        return name_product
 
 # Cart
 @views.route("/cart", methods=["GET","POST"])
 def cart():
     return render_template('cart.html')
+
+
 
 # Order
 @views.route("/order", methods=["GET","POST"])
