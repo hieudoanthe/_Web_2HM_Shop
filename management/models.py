@@ -75,6 +75,8 @@ class Detail(db.Model):
     color_product = db.Column(db.String(20))
     size_product = db.Column(db.String(5))
     producer = db.Column(db.String(255))
+    describe = db.Column(db.String(255))
+    extend = db.Column(db.String(255))
 
 class Income(db.Model):
     income_id = db.Column(db.Integer, primary_key=True)

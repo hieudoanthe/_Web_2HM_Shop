@@ -4,6 +4,10 @@ from dotenv import load_dotenv
 from flask_login import LoginManager, login_manager
 from flask_sqlalchemy import SQLAlchemy
 from datetime import timedelta
+from flask_migrate import Migrate
+
+migrate = Migrate()
+
 db = SQLAlchemy()
 
 load_dotenv()
@@ -19,6 +23,7 @@ def create_app():
     app.config["SECRET_KEY"] = SECRET_KEY
     app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:TheHieuDoan@localhost/Web_2HM_Shop"
     db.init_app(app)
+    migrate.init_app(app, db) 
     from management.user import user
     from management.views import views
     from .models import User

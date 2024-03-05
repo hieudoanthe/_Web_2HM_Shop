@@ -664,7 +664,7 @@
                 <div class="s">
                     <div class="image-slider">
                         {% for product, type_product in women_products %}
-                        <a href="http://127.0.0.1:5000/infomation">
+                        <a href="{{ url_for('views.infomation', name_product=product.name_product|urlencode) }}">
                         
                             <div class="image-item">
                                 <div class="image">
