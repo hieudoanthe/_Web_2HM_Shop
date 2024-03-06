@@ -5,12 +5,17 @@ from .import db
 import json
 from django.shortcuts import render
 from django.db.models import Q
-from management.models import Product, Detail
+from management.models import Product, Detail, Cart
 from urllib.parse import quote
 from urllib.parse import quote_plus
 from urllib.parse import unquote_plus
+from flask_login import user_logged_in
 
 views = Blueprint("views", __name__)
+
+def isLoggedIn():
+    # Kiểm tra xem người dùng hiện đã đăng nhập hay chưa
+    return current_user.is_authenticated
 
 # Trang chủ
 @views.route("/home", methods=["GET","POST"])
@@ -20,7 +25,7 @@ def home():
     women_products = []
     products = Product.query.all()
     for product in products:
-        details = Detail.query.filter_by(imei=product.imei).all()
+        details = Detail.query.filter_by(product_id=product.product_id).all()
         
         for detail in details:
             if detail.type_product == 'Nam_':
@@ -93,16 +98,66 @@ def infomation(name_product):
     decoded_name_product = unquote_plus(name_product)
     product = Product.query.filter_by(name_product=decoded_name_product).first()
     if product:
+        detail = Detail.query.filter_by(product_id=product.product_id).first()
+        detail.extend = detail.extend.replace('\n','<br>')
+        colors = detail.color_product.split(';')
+        sizes = detail.size_product.split(';')
+        describes = detail.describe.split(';')
+        extends = detail.extend.split(';')
         images = product.image.split(';')
-        return render_template('info.html', product=product, images=images)
+        return render_template('info.html', product=product, detail=detail, colors=colors, sizes=sizes, describes=describes, extends=extends, images=images)
     else:
         return name_product
 
 # Cart
-@views.route("/cart", methods=["GET","POST"])
-def cart():
-    return render_template('cart.html')
+def create_cart_for_user(user):
+    # Kiểm tra xem người dùng đã có giỏ hàng chưa bằng cách kiểm tra user_id trong bảng Cart
+    cart = Cart.query.filter_by(user_id=user.user_id).first()
+    if not cart:
+        # Nếu không có giỏ hàng cho người dùng này, tạo một giỏ hàng mới
+        cart = Cart(user_id=user.user_id)
+        db.session.add(cart)
+        db.session.commit()
 
+@views.route('/add_to_cart/<int:product_id>', methods=['POST'])
+@login_required
+def add_to_cart(product_id):
+    # Lấy thông tin sản phẩm từ cơ sở dữ liệu
+    product = Product.query.get(product_id)
+    if not product:
+        return jsonify({"message": "Sản phẩm không tồn tại"}), 404
+
+    # Kiểm tra và tạo giỏ hàng cho người dùng nếu cần
+    create_cart_for_user(current_user)
+
+    # Lấy giỏ hàng của người dùng
+    cart = current_user.cart
+
+    # Thêm sản phẩm vào giỏ hàng
+    product.cart_id = cart.cart_id
+    db.session.add(product)
+    db.session.commit()
+
+    return jsonify({"message": "Thành công"})
+
+# Xử lý sự kiện khi người dùng đăng nhập
+@user_logged_in.connect
+def on_user_logged_in(sender, user):
+    # Kiểm tra và tạo giỏ hàng cho người dùng nếu cần
+    create_cart_for_user(user)
+
+@views.route('/cart')
+@login_required
+def cart():
+    # Lấy thông tin giỏ hàng của người dùng hiện tại
+    cart = current_user.cart
+    if not cart:
+        return "Giỏ hàng của bạn đang trống"
+
+    # Lấy danh sách sản phẩm trong giỏ hàng
+    products = Product.query.filter_by(cart_id=cart.cart_id).all()
+
+    return render_template('cart.html', products=products)
 
 
 # Order

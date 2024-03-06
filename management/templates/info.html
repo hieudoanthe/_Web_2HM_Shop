@@ -345,7 +345,21 @@
                     <ul class="help_ul">
                         <li><a href="">Trợ giúp</a></li>
                         <li><a href="">Trình theo dõi đơn hàng</a></li>
-                        <li><a href="">Đăng ký hội viên</a></li>
+                        <li>
+                            {% if current_user.is_authenticated %}
+                            <!-- Nếu người dùng đã đăng nhập -->
+                            {% if current_user.user_name == "Admin" %}
+                            <!-- Nếu người dùng là admin, hiển thị nút hoặc liên kết "Chỉnh sửa" -->
+                            <a href="{{ url_for('user.logout') }}">Chỉnh sửa</a>
+                            {% else %}
+                            <!-- Hiển thị nút hoặc liên kết "Đăng xuất" -->
+                            <a href="{{ url_for('user.logout') }}">Đăng xuất</a>
+                            {% endif %}
+                            {% else %}
+                            <!-- Nếu người dùng chưa đăng nhập, hiển thị nút hoặc liên kết "Đăng nhập" -->
+                            <a href="{{ url_for('user.login') }}">Đăng nhập</a>
+                            {% endif %}
+                        </li>
                         <li class="language_select">
                             <i class="fa-solid fa-chevron-down"></i>
                             <div class="_language_change">
@@ -370,7 +384,32 @@
                         <input type="text" name="search" id="search" placeholder="Tìm kiếm">
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </form>
+                    {% if current_user.is_authenticated %}
+                    <style>
+                        #user_name:hover #user_name_popup {
+                            display: block;
+                        }
+                    
+                        #user_name_popup {
+                            display: none;
+                            position: absolute;
+                            bottom: -35px;
+                            left: 10px;
+                            right: 0;
+                            color: red;
+                        }
+                    
+                        #block:hover {
+                            color: red;
+                        }
+                    </style>
+                    <div id="user_name" style="position: relative;">
+                        <p id="block" style="font-size: 25px; padding-left: 10px">{{ current_user.user_name[:1] }}</p>
+                        <p id="user_name_popup">{{ current_user.user_name }}</p>
+                    </div>
+                    {% else %}
                     <i class="fa-regular fa-user"></i>
+                    {% endif %}
                     <i class="fa-regular fa-heart"></i>
                     <i class="fa-solid fa-bag-shopping"></i>
                 </div>
@@ -546,29 +585,26 @@
             </div>
             <div class="wrap_n">
                 <div class="title_1">
-                    <p>Mô tả</p>
+                    <p>MÔ TẢ</p>
                     <i class="fa-solid fa-chevron-down"></i>
                 </div>
                 <div class="Ds_info_1">
                     <div>
                         <div class="text">
+                            {% for describe in describes %}
+                                {% if loop.index == 1 %}
                             <h1>
-                                ĐÔI GIÀY PHONG CÁCH GOLF HỢP TÁC THIẾT KẾ CÙNG BAPE, CÓ SỬ DỤNG CHẤT LIỆU
-                                TÁI CHẾ.
+                                {{describe}}
                             </h1>
-                            <span>
-                                Dòng giày adidas Stan Smith đặc trưng khám phá thế giới bất tận của BAPE —
-                                kết quả là một thiết kế dành cho sân golf. Với thiết kế phù hợp ở cả sân
-                                golf và clubhouse, đôi giày này hòa trộn phong cách tennis cổ điển với các
-                                chi tiết phù hợp với bộ môn golf. Thân giày bằng chất liệu tổng hợp và đế
-                                ngoài đinh liền bằng cao su cho cảm giác thoải mái và độ bám suốt ngày dài,
-                                cùng ba tùy chọn dây giày cho phép bạn thỏa sức thay đổi phong cách tùy tâm
-                                trạng. Tất cả đi kèm hộp giày đặc biệt mà bạn sẽ muốn nhìn ngắm mãi về sau.
-
-                                Làm từ một loạt chất liệu tái chế, thân giày có chứa tối thiểu 50% thành
-                                phần tái chế. Sản phẩm này đại diện cho một trong số rất nhiều các giải pháp
-                                của chúng tôi hướng tới chấm dứt rác thải nhựa.
+                                {% endif %}
+                            {% endfor %}
+                            {% for describe in describes %}
+                                {% if loop.index == 2 %}
+                            <span> 
+                                {{describe}}
                             </span>
+                                {% endif %}
+                            {% endfor %}
                         </div>
                         <div class="img_Ds">
                             {% for image in images %}
@@ -581,28 +617,25 @@
                     </div>
                 </div>
                 <div class="title_2">
-                    <p>Thông tin chi tiết</p>
+                    <p>THÔNG TIN CHI TIẾT</p>
                     <i class="fa-solid fa-chevron-down"></i>
                 </div>
                 <div class="Ds_info_2">
                     <div class="text">
+                        {% for extend in extends %}
+                            {% if loop.index == 1 %}
                         <h1>
-                            ĐÔI GIÀY PHONG CÁCH GOLF HỢP TÁC THIẾT KẾ CÙNG BAPE, CÓ SỬ DỤNG CHẤT LIỆU
-                            TÁI CHẾ.
+                            {{extend}}
                         </h1>
+                            {% endif %}
+                        {% endfor %}
+                        {% for extend in extends %}
+                            {% if loop.index == 2 %}
                         <span>
-                            Dòng giày adidas Stan Smith đặc trưng khám phá thế giới bất tận của BAPE —
-                            kết quả là một thiết kế dành cho sân golf. Với thiết kế phù hợp ở cả sân
-                            golf và clubhouse, đôi giày này hòa trộn phong cách tennis cổ điển với các
-                            chi tiết phù hợp với bộ môn golf. Thân giày bằng chất liệu tổng hợp và đế
-                            ngoài đinh liền bằng cao su cho cảm giác thoải mái và độ bám suốt ngày dài,
-                            cùng ba tùy chọn dây giày cho phép bạn thỏa sức thay đổi phong cách tùy tâm
-                            trạng. Tất cả đi kèm hộp giày đặc biệt mà bạn sẽ muốn nhìn ngắm mãi về sau.
-
-                            Làm từ một loạt chất liệu tái chế, thân giày có chứa tối thiểu 50% thành
-                            phần tái chế. Sản phẩm này đại diện cho một trong số rất nhiều các giải pháp
-                            của chúng tôi hướng tới chấm dứt rác thải nhựa.
+                            {{extend | safe}}
                         </span>
+                            {% endif %}
+                        {%  endfor %}
                     </div>
                 </div>
             </div>
@@ -928,10 +961,11 @@
             </div>
         </div>
         <div class="right_content">
-            <div>
+            <div id="product-info">
                 <p>Originals</p>
                 <h1>{{product.name_product}}</h1>
                 <p>{{product.price}}</p>
+                <p>{{product.quantity}}</p>
             </div>
             <div>
                 <p style="font-weight: 300;">
@@ -941,7 +975,29 @@
                 </p>
             </div>
             <div>
-                <p>Cloud White / Cloud White / Green</p>
+                {% for color in colors %}
+                    {% if loop.index == 1%}
+                        <input type="radio" name="color" value="{{ color }}"> {{color}}
+                    {% elif loop.index ==2 %}
+                        <input type="radio" name="color" value="{{ color }}"> {{color}}
+                    {% elif loop.index ==3 %}
+                        <input type="radio" name="color" value="{{ color }}"> {{color}}
+                    {% else %}
+                        <input type="radio" name="color" value="{{ color }}"> {{color}}
+                    {% endif%}
+                {% endfor %}
+                <br>
+                {% for size in sizes %}
+                {% if loop.index == 1%}
+                <input type="radio" name="size" value="{{ size }}"> {{size}} <br>
+                {% elif loop.index ==2 %}
+                <input type="radio" name="size" value="{{ size }}"> {{size}} <br>
+                {% elif loop.index ==3 %}
+                <input type="radio" name="size" value="{{ size }}"> {{size}} <br>
+                {% else %}
+                <input type="radio" name="size" value="{{ size }}"> {{size}} <br>
+                {% endif%}
+                {% endfor %}
             </div>
             <div>
                 <h3>
@@ -950,7 +1006,7 @@
                 <div class="button">
                     <a href="">
                         <div class="_main_button">
-                            <p href="">THÊM VÀO GIỎ HÀNG <i class="fa-solid fa-arrow-right"></i></p>
+                             <button style="border: none; background-color: black; color: white;" onclick="addToCart('{{ product.product_id }}')"><p>THÊM VÀO GIỎ HÀNG <i class="fa-solid fa-arrow-right"></i></p></button>
                         </div>
                     </a>
                 </div>
@@ -1081,5 +1137,46 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
     <script src="../static/js/info.js"></script>
 </body>
+<script>
+    var isLoggedIn = {{ current_user.is_authenticated| tojson | safe }};
+</script>
+<script>
+    function addToCart(productId) {
+        // Kiểm tra xem người dùng đã đăng nhập chưa
+        if (!isLoggedIn) {
+            // Nếu chưa đăng nhập, hiển thị hộp thoại xác nhận
+            var logConfirm = confirm("Bạn cần đăng nhập trước khi thêm sản phẩm vào giỏ hàng. Bạn có muốn chuyển đến trang đăng nhập?");
+            if (logConfirm) {
+                // Nếu người dùng đồng ý, chuyển hướng đến trang đăng nhập
+                window.location.href = '/login';
+            } else {
+                // Nếu người dùng không đồng ý, không làm gì cả
+                return;
+            }
+        }
+
+        // Nếu đã đăng nhập, gửi yêu cầu thêm sản phẩm vào giỏ hàng bằng fetch
+        fetch('/add_to_cart/' + productId, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            // Có thể truyền dữ liệu JSON nếu cần
+            body: JSON.stringify({ productId: productId })
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Lỗi khi thêm sản phẩm vào giỏ hàng');
+                }
+                // Nếu thành công, chuyển hướng đến trang giỏ hàng
+                window.location.href = '/cart';
+            })
+            .catch(error => {
+                // Xử lý lỗi nếu có
+                console.error(error);
+            });
+    }
+</script>
+
 
 </html>
