@@ -131,33 +131,84 @@ def add_to_cart(product_id):
     create_cart_for_user(current_user)
 
     # Lấy giỏ hàng của người dùng
-    cart = current_user.cart
+    cart = Cart.query.filter_by(user_id=current_user.user_id).first()
 
-    # Thêm sản phẩm vào giỏ hàng
-    product.cart_id = cart.cart_id
-    db.session.add(product)
+    # Lấy thông tin sản phẩm từ request
+    product_info = request.get_json()
+
+    # Tạo một đối tượng mới của Product và thêm thông tin từ request
+    new_product = Product(
+        cart_id=cart.cart_id,
+        name_product=product_info.get('productName'),
+        price=product_info.get('productPrice'),
+        quantity=product_info.get('productQuantity'),
+        image=product_info.get('productImage')
+    )
+
+    # Thêm sản phẩm mới vào session
+    db.session.add(new_product)
     db.session.commit()
-
-    return jsonify({"message": "Thành công"})
-
+    return jsonify({"message": "Sản phẩm đã được thêm vào giỏ hàng"}), 200
 # Xử lý sự kiện khi người dùng đăng nhập
 @user_logged_in.connect
 def on_user_logged_in(sender, user):
     # Kiểm tra và tạo giỏ hàng cho người dùng nếu cần
     create_cart_for_user(user)
 
-@views.route('/cart')
+# @views.route('/cart')
+# @login_required
+# def cart():
+#     # Lấy thông tin giỏ hàng của người dùng hiện tại
+#     cart = current_user.cart
+#     if not cart:
+#         return "Giỏ hàng của bạn đang trống"
+
+#     # Lấy danh sách sản phẩm trong giỏ hàng
+#     products = Product.query.filter_by(cart_id=cart.cart_id).all()
+
+#     return render_template('cart.html', products=products)
+from flask import render_template, jsonify
+from flask_login import login_required, current_user
+from .models import Cart, Product, Detail
+
+@views.route('/cart', methods=["GET"])
 @login_required
 def cart():
-    # Lấy thông tin giỏ hàng của người dùng hiện tại
-    cart = current_user.cart
+    user_id = current_user.get_id()  # Lấy user_id của người dùng đã đăng nhập
+
+    cart = Cart.query.filter_by(user_id=user_id).first()  # Lấy thông tin giỏ hàng
     if not cart:
-        return "Giỏ hàng của bạn đang trống"
+        return jsonify({'message': 'Không tìm thấy giỏ hàng.'}), 404
 
     # Lấy danh sách sản phẩm trong giỏ hàng
-    products = Product.query.filter_by(cart_id=cart.cart_id).all()
+    products_in_cart = Product.query.filter_by(cart_id=cart.cart_id).all()
 
-    return render_template('cart.html', products=products)
+    # Tạo danh sách để chứa thông tin chi tiết của từng sản phẩm
+    products_details = []
+    for product in products_in_cart:
+        # Lấy chi tiết của từng sản phẩm
+        detail = Detail.query.filter_by(product_id=product.product_id).first()
+        products_details.append({
+            'product_id': product.product_id,
+            'name': product.name_product,
+            'price': str(product.price),
+            'quantity': product.quantity,
+            'image': product.image,
+            'date_added': product.date_added,
+            'details': {
+                'type_product': detail.type_product,
+                'color_product': detail.color_product,
+                'size_product': detail.size_product,
+                'producer': detail.producer,
+                'describe': detail.describe,
+                'extend': detail.extend
+            } if detail else {}
+        })
+
+    # Trả về template cart.html với dữ liệu products_details
+    return render_template('cart.html', products_details=products_details)
+
+
 
 
 # Order

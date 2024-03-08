@@ -168,3 +168,4 @@ $(document).ready(function () {
         $(".c3").slideToggle(500); // Toggles the visibility of the element with id "toggleMe"
     });
 });
+
