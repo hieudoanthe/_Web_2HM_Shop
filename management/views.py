@@ -133,43 +133,54 @@ def add_to_cart(product_id):
     # Lấy giỏ hàng của người dùng
     cart = Cart.query.filter_by(user_id=current_user.user_id).first()
 
-    # Lấy thông tin sản phẩm từ request
-    product_info = request.get_json()
+    # Tách chuỗi ảnh thành một danh sách các ảnh
+    image_list = product.image.split(';')
 
-    # Tạo một đối tượng mới của Product và thêm thông tin từ request
+    # Lấy ảnh đầu tiên từ danh sách
+    first_image = image_list[0] if image_list else None
+
+    # Tạo mới sản phẩm chỉ với ảnh đầu tiên
     new_product = Product(
         cart_id=cart.cart_id,
-        name_product=product_info.get('productName'),
-        price=product_info.get('productPrice'),
-        quantity=product_info.get('productQuantity'),
-        image=product_info.get('productImage')
+        name_product=product.name_product,
+        price=product.price,
+        quantity=1,
+        image=first_image
     )
+
 
     # Thêm sản phẩm mới vào session
     db.session.add(new_product)
     db.session.commit()
+
+    # Lấy product_id của sản phẩm đã được thêm vào giỏ hàng
+    added_product = Product.query.filter_by(cart_id=cart.cart_id, name_product=product.name_product).first()
+    product_id_in_cart = added_product.product_id
+
+    # Lấy thông tin sản phẩm từ request
+    product_info = request.get_json()
+
+    # Tạo một đối tượng mới của Detail và thêm thông tin từ request
+    new_detail = Detail(
+        product_id=product_id_in_cart,
+        size_product=product_info.get('selectedSize'),
+        color_product=product_info.get('selectedColor')
+    )
+
+    # Thêm detail mới vào session
+    db.session.add(new_detail)
+    db.session.commit()
+    
     return jsonify({"message": "Sản phẩm đã được thêm vào giỏ hàng"}), 200
+
+
+
 # Xử lý sự kiện khi người dùng đăng nhập
 @user_logged_in.connect
 def on_user_logged_in(sender, user):
     # Kiểm tra và tạo giỏ hàng cho người dùng nếu cần
     create_cart_for_user(user)
 
-# @views.route('/cart')
-# @login_required
-# def cart():
-#     # Lấy thông tin giỏ hàng của người dùng hiện tại
-#     cart = current_user.cart
-#     if not cart:
-#         return "Giỏ hàng của bạn đang trống"
-
-#     # Lấy danh sách sản phẩm trong giỏ hàng
-#     products = Product.query.filter_by(cart_id=cart.cart_id).all()
-
-#     return render_template('cart.html', products=products)
-from flask import render_template, jsonify
-from flask_login import login_required, current_user
-from .models import Cart, Product, Detail
 
 @views.route('/cart', methods=["GET"])
 @login_required
@@ -190,7 +201,7 @@ def cart():
         detail = Detail.query.filter_by(product_id=product.product_id).first()
         products_details.append({
             'product_id': product.product_id,
-            'name': product.name_product,
+            'name_product': product.name_product,
             'price': str(product.price),
             'quantity': product.quantity,
             'image': product.image,
@@ -204,11 +215,27 @@ def cart():
                 'extend': detail.extend
             } if detail else {}
         })
-
-    # Trả về template cart.html với dữ liệu products_details
     return render_template('cart.html', products_details=products_details)
 
+# Xóa sản phẩm
+@views.route('/remove_product/<int:product_id>', methods=['POST'])
+@login_required
+def remove_product(product_id):
+    # Tìm sản phẩm cần xóa
+    product = Product.query.get(product_id)
+    if not product:
+        return jsonify({"message": "Sản phẩm không tồn tại"}), 404
 
+    # Xóa sản phẩm khỏi bảng chi tiết (detail) trước
+    detail = Detail.query.filter_by(product_id=product_id).first()
+    if detail:
+        db.session.delete(detail)
+
+    # Tiếp theo, xóa sản phẩm khỏi bảng sản phẩm (product)
+    db.session.delete(product)
+    db.session.commit()
+
+    return jsonify({"message": "Sản phẩm và chi tiết của nó đã được xóa thành công"}), 200
 
 
 # Order

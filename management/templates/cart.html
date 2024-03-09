@@ -540,7 +540,9 @@
             <div class="parent">
                 <h1>GIỎ HÀNG CỦA BẠN</h1>
             </div>
-            <p>TỔNG CỘNG (1) sản phẩm: 0<sup>đ</sup></p>
+            <p>TỔNG CỘNG
+                {{ products_details|length }} sản phẩm sản phẩm
+            </p>
         <div>
                 <div> Quảng cáo bbala</div>
                 {% for product in products_details %}
@@ -549,9 +551,12 @@
                         <img width="250px" height="250px" style="object-fit: cover;" src="../static/img/{{product.image}}" alt="">
                     </div>
                     <div style="display: flex; flex-direction: column; justify-content: space-around">
-                        <h2>{{ product.name }}</h2>
-                        <p>giá</p>
-                        <p>Kích cỡ</p>
+                        <h2>{{ product.name_product }}</h2>
+                        <p>
+                            {{product.details.color_product}}
+                        </p>
+                        <p>{{product.product_id}}</p>
+                        <p>{{product.details.size_product}}</p>
                         <select name="quantity">
                             <option value="1">1</option>
                             <option value="2">2</option>
@@ -565,7 +570,7 @@
                         </div>
                     </div>
                     <div style="margin-right: 5px;">
-                        <button>X</button>
+                        <button onclick="removeProduct({{ product.product_id }})">X</button>
                     </div>
                 </div>
                 {% endfor %}
@@ -916,6 +921,27 @@
             });
     }
 </script>
+<script>
+    function removeProduct(productId) {
+        var confirmation = confirm("Bạn có chắc chắn muốn xóa sản phẩm này?");
+        if (confirmation) {
+            fetch(`/remove_product/${productId}`, {
+                method: 'POST'
+            })
+                .then(response => {
+                    if (response.ok) {
+                        window.location.reload();
+                    } else {
+                        console.error('Lỗi khi xóa sản phẩm');
+                    }
+                })
+                .catch(error => {
+                    console.error('Lỗi khi xóa sản phẩm:', error);
+                });
+        }
+    }
+</script>
+
 
 
 </html>
