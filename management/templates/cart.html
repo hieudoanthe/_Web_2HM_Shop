@@ -412,7 +412,17 @@
                     <i class="fa-regular fa-user"></i>
                     {% endif %}
                     <i class="fa-regular fa-heart"></i>
-                    <i class="fa-solid fa-bag-shopping"></i>
+                    <div style="position: relative;">
+                        {% if total_quantity == 0 %}
+                        <a href="http://127.0.0.1:5000/cart"><i style="font-size: 20px;" class="fa-solid fa-bag-shopping"></i></a>
+                        {% else %}
+                        <a href="http://127.0.0.1:5000/cart"><i style="font-size: 20px;" class="fa-solid fa-bag-shopping"></i></a>
+                        <a href="http://127.0.0.1:5000/cart"
+                            style="border-radius: 50%; width: 20px;height: 20px; background-color: #197FB6;color: white; position: absolute; top:-10px;right: 0; left: 15px; display: flex; justify-content: center; align-items: center; text-align: center; font-size: 10px;">
+                            {{total_quantity}}
+                        </a>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         </div>
@@ -537,209 +547,244 @@
     </header>
     <div class="main_info">
         <div class="left_content">
-            <div class="parent">
-                <h1>GIỎ HÀNG CỦA BẠN</h1>
+            <div class="parent" style="margin-bottom: 30px;">
+                <h1>GIỎ HÀNG CỦA BẠN ({{ products_details|length }})</h1>
             </div>
-            <p>TỔNG CỘNG
-                {{ products_details|length }} sản phẩm sản phẩm
-            </p>
-        <div>
-                <div> Quảng cáo bbala</div>
-                {% for product in products_details %}
-                <div class="cart">
+            {% if products_details|length == 0 %}
+            <p style="margin-top: 100px; margin-bottom: 80px; margin-left: 200px;">CHƯA CÓ SẢN PHẨM NÀO TRONG GIỎ HÀNG !</p>
+            {% endif %}
+            <div>
+            {% for product in products_details %}
+            <div class="cart" style="margin-left: 80px; background-color: #ECEFF1;">
+                <div>
+                    <img width="270px" height="247px" style="object-fit: cover;" src="../static/img/{{product.image}}" alt="">
+                </div>
+                <div style="display: flex; flex-direction: column; justify-content: space-around;">
+                    <h3 style="text-transform: uppercase;">{{ product.name_product }}</h3>
+                    <p style="text-transform: uppercase;">
+                        {{product.details.color_product}}
+                    </p>
+                    <p style="text-transform: uppercase;">{{product.details.size_product}}</p>
+                    <select style="max-width: 200px; outline: none;" name="quantity" onchange="updateQuantity(this.value, {{ product.product_id }})">
+                        <option style="font-weight: bold;">{{product.quantity}}</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                    </select>
+
+                </div>
+                <div style="display: flex;flex-direction: column;justify-content: space-around;">
                     <div>
-                        <img width="250px" height="250px" style="object-fit: cover;" src="../static/img/{{product.image}}" alt="">
+                        <p>ĐƠN GIÁ</p>
+                        <p>{{product.price}} <sub>đ</sub></p>
                     </div>
-                    <div style="display: flex; flex-direction: column; justify-content: space-around">
-                        <h2>{{ product.name_product }}</h2>
-                        <p>
-                            {{product.details.color_product}}
-                        </p>
-                        <p>{{product.product_id}}</p>
-                        <p>{{product.details.size_product}}</p>
-                        <select name="quantity">
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                        </select>
-                    </div>
-                    <div style="display: flex;flex-direction: column;justify-content: space-around;">
-                        <div>
-                            <p>VNĐ/ Sản phẩm</p>
-                            <p>price</p>
+                </div>
+                <div style="margin-right: 5px;">
+                    <style>
+                        #close:hover{
+                            color: red;
+                        }
+                    </style>
+                    <button  style="border: none; background-color: white;" onclick="removeProduct({{ product.product_id }})"><i  id="close" style="font-size: 20px; cursor: pointer;" class="fa-solid fa-xmark"></i></button>
+                </div>
+            </div>
+            {% endfor %}
+            <div class="more_product">
+            <h1>
+                YOU MAY ALSO LIKE
+            </h1>
+            
+            </div>
+            <div class="image-slider">
+                <a href="">
+                    <div class="image-item">
+                        <div class="image">
+                            <img src="https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/7477b277ec6647919fa241a78609964a_9366/Giay_Alphaboost_V1_mau_xanh_la_IG3129_01_standard.jpg"
+                                alt="" />
+                            <p>3.600.000<sup>đ</sup></p>
+                        </div>
+                        <div class="cost">
+                            <p>Nam Chạy Giày Adizero Adios 8</p>
+                            <p>Nam Chạy</p>
+                            <p>New</p>
+                        </div>
+                        <div class="_border">
+
                         </div>
                     </div>
-                    <div style="margin-right: 5px;">
-                        <button onclick="removeProduct({{ product.product_id }})">X</button>
+                </a>
+                <a href="">
+                    <div class="image-item">
+                        <div class="image">
+                            <img src="https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/eb1e2d9fd65242d588bddc35bd66e61e_9366/Giay_X_PLR_Boost_Mau_xanh_da_troi_ID9580_01_standard.jpg"
+                                alt="" />
+                            <p>3.600.000<sup>đ</sup></p>
+                        </div>
+                        <div class="cost">
+                            <p>Nữ Chạy Giày Adizero Adios 8</p>
+                            <p>Nữ Chạy</p>
+                            <p>New</p>
+                        </div>
+                        <div class="_border">
+
+                        </div>
                     </div>
-                </div>
-                {% endfor %}
-        <div class="more_product">
-        <h1>
-            YOU MAY ALSO LIKE
-        </h1>
-        
+                </a>
+                <a href="">
+                    <div class="image-item">
+                        <div class="image">
+                            <img src="https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/3c43063276d94cbbb23a74dcd292bd3c_9366/Giay_X_PLR_Boost_mau_xanh_la_ID9579_01_standard.jpg"
+                                alt="" />
+                            <p>3.600.000<sup>đ</sup></p>
+                        </div>
+                        <div class="cost">
+                            <p>Nam Sportswear Giày Alphaboost V1</p>
+                            <p>Nam Sportswear</p>
+                            <p>New</p>
+                        </div>
+                        <div class="_border">
+
+                        </div>
+                    </div>
+                </a>
+                <a href="">
+                    <div class="image-item">
+                        <div class="image">
+                            <img src="https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/91fa955f44f54f3bb9f3634bca6ecb5f_9366/GAZELLE_DJo_IE8503_01_standard.jpg"
+                                alt="" />
+                            <p>3.600.000<sup>đ</sup></p>
+                        </div>
+                        <div class="cost">
+                            <p>Nam Sportswear Giày X_PLR Boost</p>
+                            <p>Nam Sportswear</p>
+                            <p>New</p>
+                        </div>
+                        <div class="_border">
+
+                        </div>
+                    </div>
+                </a>
+                <a href="">
+                    <div class="image-item">
+                        <div class="image">
+                            <img src="https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/af6af2de73824e3bbbe435933a357fde_9366/Giay_Chay_Bo_Switch_FWD_mau_xanh_la_IG0676_HM1.jpg"
+                                alt="" />
+                            <p>3.600.000<sup>đ</sup></p>
+                        </div>
+                        <div class="cost">
+                            <p>Nam Sportswear Giày X_PLR Boost</p>
+                            <p>Nam Sportswear</p>
+                            <p>New</p>
+                        </div>
+                        <div class="_border">
+
+                        </div>
+                    </div>
+                </a>
+                <a href="">
+                    <div class="image-item">
+                        <div class="image">
+                            <img src="https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/520fd9246c6d439eb1d5a9f0842e4976_9366/Giay_X_PLR_Boost_Hong_IF2954_01_standard.jpg"
+                                alt="" />
+                            <p>3.600.000<sup>đ</sup></p>
+                        </div>
+                        <div class="cost">
+                            <p>Nam Originals GAZELLE</p>
+                            <p>Nam Originals</p>
+                            <p>New</p>
+                        </div>
+                        <div class="_border">
+
+                        </div>
+                    </div>
+                </a>
+                <a href="">
+                    <div class="image-item">
+                        <div class="image">
+                            <img src="https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/841d520758dc46879a708b4e316e6691_9366/Giay_X_PLR_Boost_Xam_IF2953_01_standard.jpg"
+                                alt="" />
+                            <p>3.600.000<sup>đ</sup></p>
+                        </div>
+                        <div class="cost">
+                            <p>Nữ Sportswear Giày X_PLR Boost</p>
+                            <p>NNữ Sportswear</p>
+                            <p>New</p>
+                        </div>
+                        <div class="_border">
+
+                        </div>
+                    </div>
+                </a>
+                <a href="">
+                    <div class="image-item">
+                        <div class="image">
+                            <img src="https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/e711a37af3424846b5470558bcd2bcb7_9366/Giay_Ultraboost_Light_Xam_IE1759_01_standard.jpg"
+                                alt="" />
+                            <p>3.600.000<sup>đ</sup></p>
+                        </div>
+                        <div class="cost">
+                            <p>Nữ Sportswear Giày X_PLR Boost</p>
+                            <p>Nữ Sportswear</p>
+                            <p>New</p>
+                        </div>
+                        <div class="_border">
+
+                        </div>
+                    </div>
+                </a>
+                <a href="">
+                    <div class="image-item">
+                        <div class="image">
+                            <img src="https://assets.adidas.com/images/w_280,h_280,f_auto,q_auto:sensitive/316297fac2c54c689ec192e376e79540_9366/gi%C3%A0y-ultraboost-light.jpg"
+                                alt="" />
+                            <p>3.600.000<sup>đ</sup></p>
+                        </div>
+                        <div class="cost">
+                            <p>Nam Chạy Giày Ultraboost Light</p>
+                            <p>Nam Chạy</p>
+                            <p>New</p>
+                        </div>
+                        <div class="_border">
+
+                        </div>
+                    </div>
+                </a>
+            </div>
+            </div>
         </div>
-        <div class="image-slider">
-            <a href="">
-                <div class="image-item">
-                    <div class="image">
-                        <img src="https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/7477b277ec6647919fa241a78609964a_9366/Giay_Alphaboost_V1_mau_xanh_la_IG3129_01_standard.jpg"
-                            alt="" />
-                        <p>3.600.000<sup>đ</sup></p>
-                    </div>
-                    <div class="cost">
-                        <p>Nam Chạy Giày Adizero Adios 8</p>
-                        <p>Nam Chạy</p>
-                        <p>New</p>
-                    </div>
-                    <div class="_border">
+        <div class="right_content">
+            <div class="button">
+                <div class="_main_button" style="width: 100%;">
+                    <button style="border: none; background-color: black; color: white;">
+                        <p>THANH TOÁN <i class="fa-solid fa-arrow-right"></i></p>
+                    </button>
+                </div>  
+            </div>
+            <div>
+                <h2>TÓM TẮT ĐƠN HÀNG</h2>
+            </div>
+            <div style="display: flex;justify-content: space-between;">
+                <p>{{total_quantity}} các sản phẩm</p>
+                <p style="margin-right: 20px;">
+                    {{ total_price }}
+                     <sup>đ</sup>
+                </p>
+            </div>
 
-                    </div>
-                </div>
-            </a>
-            <a href="">
-                <div class="image-item">
-                    <div class="image">
-                        <img src="https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/eb1e2d9fd65242d588bddc35bd66e61e_9366/Giay_X_PLR_Boost_Mau_xanh_da_troi_ID9580_01_standard.jpg"
-                            alt="" />
-                        <p>3.600.000<sup>đ</sup></p>
-                    </div>
-                    <div class="cost">
-                        <p>Nữ Chạy Giày Adizero Adios 8</p>
-                        <p>Nữ Chạy</p>
-                        <p>New</p>
-                    </div>
-                    <div class="_border">
-
-                    </div>
-                </div>
-            </a>
-            <a href="">
-                <div class="image-item">
-                    <div class="image">
-                        <img src="https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/3c43063276d94cbbb23a74dcd292bd3c_9366/Giay_X_PLR_Boost_mau_xanh_la_ID9579_01_standard.jpg"
-                            alt="" />
-                        <p>3.600.000<sup>đ</sup></p>
-                    </div>
-                    <div class="cost">
-                        <p>Nam Sportswear Giày Alphaboost V1</p>
-                        <p>Nam Sportswear</p>
-                        <p>New</p>
-                    </div>
-                    <div class="_border">
-
-                    </div>
-                </div>
-            </a>
-            <a href="">
-                <div class="image-item">
-                    <div class="image">
-                        <img src="https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/91fa955f44f54f3bb9f3634bca6ecb5f_9366/GAZELLE_DJo_IE8503_01_standard.jpg"
-                            alt="" />
-                        <p>3.600.000<sup>đ</sup></p>
-                    </div>
-                    <div class="cost">
-                        <p>Nam Sportswear Giày X_PLR Boost</p>
-                        <p>Nam Sportswear</p>
-                        <p>New</p>
-                    </div>
-                    <div class="_border">
-
-                    </div>
-                </div>
-            </a>
-            <a href="">
-                <div class="image-item">
-                    <div class="image">
-                        <img src="https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/af6af2de73824e3bbbe435933a357fde_9366/Giay_Chay_Bo_Switch_FWD_mau_xanh_la_IG0676_HM1.jpg"
-                            alt="" />
-                        <p>3.600.000<sup>đ</sup></p>
-                    </div>
-                    <div class="cost">
-                        <p>Nam Sportswear Giày X_PLR Boost</p>
-                        <p>Nam Sportswear</p>
-                        <p>New</p>
-                    </div>
-                    <div class="_border">
-
-                    </div>
-                </div>
-            </a>
-            <a href="">
-                <div class="image-item">
-                    <div class="image">
-                        <img src="https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/520fd9246c6d439eb1d5a9f0842e4976_9366/Giay_X_PLR_Boost_Hong_IF2954_01_standard.jpg"
-                            alt="" />
-                        <p>3.600.000<sup>đ</sup></p>
-                    </div>
-                    <div class="cost">
-                        <p>Nam Originals GAZELLE</p>
-                        <p>Nam Originals</p>
-                        <p>New</p>
-                    </div>
-                    <div class="_border">
-
-                    </div>
-                </div>
-            </a>
-            <a href="">
-                <div class="image-item">
-                    <div class="image">
-                        <img src="https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/841d520758dc46879a708b4e316e6691_9366/Giay_X_PLR_Boost_Xam_IF2953_01_standard.jpg"
-                            alt="" />
-                        <p>3.600.000<sup>đ</sup></p>
-                    </div>
-                    <div class="cost">
-                        <p>Nữ Sportswear Giày X_PLR Boost</p>
-                        <p>NNữ Sportswear</p>
-                        <p>New</p>
-                    </div>
-                    <div class="_border">
-
-                    </div>
-                </div>
-            </a>
-            <a href="">
-                <div class="image-item">
-                    <div class="image">
-                        <img src="https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/e711a37af3424846b5470558bcd2bcb7_9366/Giay_Ultraboost_Light_Xam_IE1759_01_standard.jpg"
-                            alt="" />
-                        <p>3.600.000<sup>đ</sup></p>
-                    </div>
-                    <div class="cost">
-                        <p>Nữ Sportswear Giày X_PLR Boost</p>
-                        <p>Nữ Sportswear</p>
-                        <p>New</p>
-                    </div>
-                    <div class="_border">
-
-                    </div>
-                </div>
-            </a>
-            <a href="">
-                <div class="image-item">
-                    <div class="image">
-                        <img src="https://assets.adidas.com/images/w_280,h_280,f_auto,q_auto:sensitive/316297fac2c54c689ec192e376e79540_9366/gi%C3%A0y-ultraboost-light.jpg"
-                            alt="" />
-                        <p>3.600.000<sup>đ</sup></p>
-                    </div>
-                    <div class="cost">
-                        <p>Nam Chạy Giày Ultraboost Light</p>
-                        <p>Nam Chạy</p>
-                        <p>New</p>
-                    </div>
-                    <div class="_border">
-
-                    </div>
-                </div>
-            </a>
+            <div style="display: flex;justify-content: space-between; flex-direction: row; margin-top: -40px;">
+                <p>Giao hàng</p>
+                <p style="margin-right: 20px;">Miễn phí</p>
+            </div>
+            <div style="display: flex;justify-content: space-between; flex-direction: row;">
+                <p style="font-weight: bold;">TỔNG:</p>
+                <p style="margin-right: 20px; font-weight: bold;">{{ total_price }} <sup>đ</sup></p>
+            </div>
+            <div>
+                <h4 style="text-transform: uppercase; letter-spacing: 1px; padding-bottom: 35px;">Phương thức thanh toán được chấp nhận</h4>
+                <img src="../static/img/icon-adidas-mastercard.svg" alt="">
+                <img src="../static/img/icon-adidas-visa.svg" alt="">
+            </div>
         </div>
-        </div>
-    </div>
-    <div class="right_content">
-        ffffff
-    </div>
     </div>
     <footer>
         <div class="members">
@@ -939,6 +984,31 @@
                     console.error('Lỗi khi xóa sản phẩm:', error);
                 });
         }
+    }
+</script>
+<script>
+    function updateQuantity(quantity, productId) {
+        fetch(`/update_quantity/${productId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ quantity: quantity })
+        })
+            .then(response => {
+                if (response.ok) {
+                    // Nếu cập nhật thành công, làm gì đó (ví dụ: cập nhật lại giao diện)
+                     window.location.reload();
+                    console.log('Đã cập nhật số lượng sản phẩm');
+                } else {
+                    // Xử lý lỗi nếu có
+                    console.error('Lỗi khi cập nhật số lượng sản phẩm');
+                }
+            })
+            .catch(error => {
+                // Xử lý lỗi nếu có
+                console.error('Lỗi khi cập nhật số lượng sản phẩm:', error);
+            });
     }
 </script>
 

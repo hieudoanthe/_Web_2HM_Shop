@@ -54,9 +54,21 @@ class Product(db.Model):
     quantity = db.Column(db.Integer)
     image = db.Column(db.String(255))
     date_added = db.Column(db.DateTime, default=datetime.utcnow)
+    auto_imei = db.Column(db.String(36), unique=True, nullable=False)
 
     details = db.relationship('Detail', backref='product', lazy=True)
 
+    def __init__(self, cart_id, name_product, price, quantity, image):
+            self.cart_id = cart_id
+            self.name_product = name_product
+            self.price = price
+            self.quantity = quantity
+            self.image = image
+            self.auto_imei = self.generate_auto_imei()
+
+    def generate_auto_imei(self):
+        return str(uuid.uuid4())
+        
 class Detail(db.Model):
     detail_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     product_id = db.Column(db.Integer, db.ForeignKey('product.product_id'), nullable=False)

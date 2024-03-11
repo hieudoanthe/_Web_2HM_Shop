@@ -10,6 +10,7 @@ from urllib.parse import quote
 from urllib.parse import quote_plus
 from urllib.parse import unquote_plus
 from flask_login import user_logged_in
+from flask import session
 
 views = Blueprint("views", __name__)
 
@@ -20,6 +21,7 @@ def isLoggedIn():
 # Trang chủ
 @views.route("/home", methods=["GET","POST"])
 @views.route("/", methods=["GET","POST"])
+@login_required
 def home(): 
     men_products = []
     women_products = []
@@ -35,7 +37,8 @@ def home():
     first_images = [get_first_image(product.image) for product, _ in men_products]
     first_images += [get_first_image(product.image) for product, _ in women_products]
     messages = get_flashed_messages()
-    return render_template("index.html",men_products=men_products, women_products=women_products,first_images=first_images, user=current_user if current_user.is_authenticated else None)
+    total_quantity = session.get('total_quantity', 0)
+    return render_template("index.html",total_quantity=total_quantity,men_products=men_products, women_products=women_products,first_images=first_images, user=current_user if current_user.is_authenticated else None)
 def get_first_image(image):
     # Kiểm tra nếu đường dẫn ảnh không rỗng
     if image:
@@ -153,9 +156,12 @@ def add_to_cart(product_id):
     db.session.add(new_product)
     db.session.commit()
 
-    # Lấy product_id của sản phẩm đã được thêm vào giỏ hàng
-    added_product = Product.query.filter_by(cart_id=cart.cart_id, name_product=product.name_product).first()
-    product_id_in_cart = added_product.product_id
+  # Lấy product_id của sản phẩm đã được thêm vào giỏ hàng
+    added_product = Product.query.filter_by(cart_id=cart.cart_id, auto_imei=new_product.auto_imei).first()
+    if added_product:
+        product_id_in_cart = added_product.product_id
+    else:
+        return jsonify({"message": "Không tìm thấy sản phẩm trong giỏ hàng"}), 404
 
     # Lấy thông tin sản phẩm từ request
     product_info = request.get_json()
@@ -170,8 +176,9 @@ def add_to_cart(product_id):
     # Thêm detail mới vào session
     db.session.add(new_detail)
     db.session.commit()
-    
+
     return jsonify({"message": "Sản phẩm đã được thêm vào giỏ hàng"}), 200
+
 
 
 
@@ -181,13 +188,14 @@ def on_user_logged_in(sender, user):
     # Kiểm tra và tạo giỏ hàng cho người dùng nếu cần
     create_cart_for_user(user)
 
-
 @views.route('/cart', methods=["GET"])
 @login_required
 def cart():
-    user_id = current_user.get_id()  # Lấy user_id của người dùng đã đăng nhập
+    # Lấy user_id của người dùng đã đăng nhập
+    user_id = current_user.get_id()  
 
-    cart = Cart.query.filter_by(user_id=user_id).first()  # Lấy thông tin giỏ hàng
+    # Lấy thông tin giỏ hàng
+    cart = Cart.query.filter_by(user_id=user_id).first()  
     if not cart:
         return jsonify({'message': 'Không tìm thấy giỏ hàng.'}), 404
 
@@ -202,7 +210,7 @@ def cart():
         products_details.append({
             'product_id': product.product_id,
             'name_product': product.name_product,
-            'price': str(product.price),
+            'price': float(product.price),  # Chuyển đổi giá thành float
             'quantity': product.quantity,
             'image': product.image,
             'date_added': product.date_added,
@@ -215,7 +223,12 @@ def cart():
                 'extend': detail.extend
             } if detail else {}
         })
-    return render_template('cart.html', products_details=products_details)
+    total_price = sum(product['price'] * product['quantity'] for product in products_details)
+    total_quantity = sum(product['quantity'] for product in products_details)
+    session['total_quantity'] = total_quantity
+
+    return render_template('cart.html', products_details=products_details, total_price=total_price, total_quantity=total_quantity)
+
 
 # Xóa sản phẩm
 @views.route('/remove_product/<int:product_id>', methods=['POST'])
@@ -242,3 +255,20 @@ def remove_product(product_id):
 @views.route("/order", methods=["GET","POST"])
 def order():
     return render_template('order.html')
+# Quantity
+@views.route('/update_quantity/<int:product_id>', methods=['POST'])
+@login_required
+def update_quantity(product_id):
+    data = request.json
+    quantity = data.get('quantity')
+
+    # Lấy thông tin sản phẩm từ cơ sở dữ liệu
+    product = Product.query.get(product_id)
+    if not product:
+        return jsonify({"message": "Sản phẩm không tồn tại"}), 404
+
+    # Cập nhật số lượng sản phẩm
+    product.quantity = quantity
+    db.session.commit()
+
+    return jsonify({"message": "Số lượng sản phẩm đã được cập nhật"}), 200
