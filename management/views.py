@@ -102,6 +102,7 @@ def infomation(name_product):
     product = Product.query.filter_by(name_product=decoded_name_product).first()
     if product:
         detail = Detail.query.filter_by(product_id=product.product_id).first()
+        detail.describe = detail.describe.replace('\n','<br>')
         detail.extend = detail.extend.replace('\n','<br>')
         colors = detail.color_product.split(';')
         sizes = detail.size_product.split(';')

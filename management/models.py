@@ -54,7 +54,7 @@ class Product(db.Model):
     quantity = db.Column(db.Integer)
     image = db.Column(db.String(255))
     date_added = db.Column(db.DateTime, default=datetime.utcnow)
-    auto_imei = db.Column(db.String(36), unique=True, nullable=False)
+    auto_imei = db.Column(db.String(36), unique=True, nullable=True)
 
     details = db.relationship('Detail', backref='product', lazy=True)
 
