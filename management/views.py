@@ -273,3 +273,19 @@ def update_quantity(product_id):
     db.session.commit()
 
     return jsonify({"message": "Số lượng sản phẩm đã được cập nhật"}), 200
+
+@views.route("/dashboard", methods=["GET","POST"])
+def dashboard():
+    return render_template('admin_dash.html')
+@views.route("/management_add", methods=["GET","POST"])
+def add_product():
+    return render_template('admin_add.html')
+@views.route("/management_list", methods=["GET","POST"])
+def list_product():
+    return render_template('admin_list.html')
+@views.route("/management_month", methods=["GET","POST"])
+def approve():
+    return render_template('admin_month.html')
+@views.route("/management_week", methods=["GET","POST"])
+def income():
+    return render_template('admin_week.html')

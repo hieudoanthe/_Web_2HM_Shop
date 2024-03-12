@@ -351,7 +351,8 @@
                             <!-- Nếu người dùng đã đăng nhập -->
                                 {% if current_user.user_name == "Admin" %}
                                 <!-- Nếu người dùng là admin, hiển thị nút hoặc liên kết "Chỉnh sửa" -->
-                                    <a href="{{ url_for('user.logout') }}">Chỉnh sửa</a>
+                                    <a href="{{ url_for('views.dashboard') }}">Chỉnh sửa</a>
+                                    <a href="{{ url_for('user.logout') }}">Đăng xuất</a>
                                 {% else %}
                                 <!-- Hiển thị nút hoặc liên kết "Đăng xuất" -->
                                     <a href="{{ url_for('user.logout') }}">Đăng xuất</a>
