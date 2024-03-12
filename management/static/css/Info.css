@@ -1430,9 +1430,12 @@ div:nth-of-type(5) {
 
 /* cart */
 .cart {
-    border: 1px solid black;
+    border: 2px solid black;
     display: flex;
     justify-content: space-between;
     max-width: 100%;
-    width: 650px;
+    max-height: 100%;
+    width: 850px;
+    height: 250px;
+    margin-bottom: 10px;
 }

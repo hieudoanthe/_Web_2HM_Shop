@@ -601,7 +601,7 @@
                             {% for describe in describes %}
                                 {% if loop.index == 2 %}
                             <span> 
-                                {{describe}}
+                                {{describe |safe}}
                             </span>
                                 {% endif %}
                             {% endfor %}
@@ -993,6 +993,14 @@
                 {% elif loop.index ==2 %}
                 <input type="radio" name="size" value="{{ size }}"> {{size}} <br>
                 {% elif loop.index ==3 %}
+                <input type="radio" name="size" value="{{ size }}"> {{size}} <br>
+                {% elif loop.index == 4 %}
+                <input type="radio" name="size" value="{{ size }}"> {{size}} <br>
+                {% elif loop.index == 5 %}
+                <input type="radio" name="size" value="{{ size }}"> {{size}} <br>
+                {% elif loop.index == 6 %}
+                <input type="radio" name="size" value="{{ size }}"> {{size}} <br>
+                {% elif loop.index == 7 %}
                 <input type="radio" name="size" value="{{ size }}"> {{size}} <br>
                 {% else %}
                 <input type="radio" name="size" value="{{ size }}"> {{size}} <br>
