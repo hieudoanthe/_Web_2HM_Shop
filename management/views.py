@@ -14,10 +14,9 @@ from flask import session
 
 views = Blueprint("views", __name__)
 
+# Kiểm tra đăng nhập
 def isLoggedIn():
-    # Kiểm tra xem người dùng hiện đã đăng nhập hay chưa
     return current_user.is_authenticated
-
 # Trang chủ
 @views.route("/home", methods=["GET","POST"])
 @views.route("/", methods=["GET","POST"])
@@ -40,58 +39,54 @@ def home():
     total_quantity = session.get('total_quantity', 0)
     return render_template("index.html",total_quantity=total_quantity,men_products=men_products, women_products=women_products,first_images=first_images, user=current_user if current_user.is_authenticated else None)
 def get_first_image(image):
-    # Kiểm tra nếu đường dẫn ảnh không rỗng
     if image:
-        # Tách chuỗi đường dẫn ảnh thành một danh sách
         image_list = image.split(';')
-        # Trả về tên của ảnh đầu tiên
         return image_list[0]
-    # Trả về None nếu không có ảnh nào
     return None
 
 
 # Nam
 @views.route("/male_page", methods=["GET","POST"])
 def male_page():
-    return render_template('male_page.html')
+    return render_template('male/male_page.html')
     # Giày nam
 @views.route("/shoemale_page", methods=["GET","POST"])
 def shoemale_page():
-    return render_template('shoemale_page.html')
+    return render_template('male/shoemale_page.html')
 @views.route("/fashion_male", methods=["GET","POST"])
     # Thời trang nam
 def fashion_male():
-    return render_template('fashion_male.html')
+    return render_template('male/fashion_male.html')
 
 
 
 # Nữ
 @views.route("/female_page", methods=["GET","POST"])
 def female_page():
-    return render_template('female_page.html')
+    return render_template('female/female_page.html')
     # Giày nữ
 @views.route("/shoefemale_page", methods=["GET","POST"])
 def shoefemale_page():
-    return render_template('shoefemale_page.html') 
+    return render_template('female/shoefemale_page.html') 
     # Thời trang nữ
 @views.route("/fashion_female", methods=["GET","POST"])
 def fashion_female():
-    return render_template('fashion_female.html')
+    return render_template('female/fashion_female.html')
 
 
     
 # Trẻ em
 @views.route("/kid_page", methods=["GET","POST"])
 def kid_page():
-    return render_template('kid_page.html')
+    return render_template('kid/kid_page.html')
     # Giày trẻ em
 @views.route("/shoekid_page", methods=["GET","POST"])
 def shoekid_page():
-    return render_template('shoekid_page.html')
+    return render_template('kid/shoekid_page.html')
     # Thời trang trẻ em
 @views.route("/fashion_kid", methods=["GET","POST"])
 def fashion_kid():
-    return render_template('fashion_kid.html')
+    return render_template('kid/fashion_kid.html')
 
 
 
@@ -109,7 +104,9 @@ def infomation(name_product):
         describes = detail.describe.split(';')
         extends = detail.extend.split(';')
         images = product.image.split(';')
-        return render_template('info.html', product=product, detail=detail, colors=colors, sizes=sizes, describes=describes, extends=extends, images=images)
+        other_products_Nam = Product.query.filter(Product.product_id != product.product_id, Product.product_id <= 10).limit(20).all()
+        other_products_Nu = Product.query.filter(Product.product_id != product.product_id, Product.product_id > 10, Product.product_id <= 20).limit(20).all()
+        return render_template('info.html', product=product, detail=detail, colors=colors, sizes=sizes, describes=describes, extends=extends, images=images,other_products_Nam=other_products_Nam,other_products_Nu=other_products_Nu)
     else:
         return name_product
 
@@ -118,7 +115,6 @@ def create_cart_for_user(user):
     # Kiểm tra xem người dùng đã có giỏ hàng chưa bằng cách kiểm tra user_id trong bảng Cart
     cart = Cart.query.filter_by(user_id=user.user_id).first()
     if not cart:
-        # Nếu không có giỏ hàng cho người dùng này, tạo một giỏ hàng mới
         cart = Cart(user_id=user.user_id)
         db.session.add(cart)
         db.session.commit()
@@ -126,7 +122,6 @@ def create_cart_for_user(user):
 @views.route('/add_to_cart/<int:product_id>', methods=['POST'])
 @login_required
 def add_to_cart(product_id):
-    # Lấy thông tin sản phẩm từ cơ sở dữ liệu
     product = Product.query.get(product_id)
     if not product:
         return jsonify({"message": "Sản phẩm không tồn tại"}), 404
@@ -228,7 +223,7 @@ def cart():
     total_quantity = sum(product['quantity'] for product in products_details)
     session['total_quantity'] = total_quantity
 
-    return render_template('cart.html', products_details=products_details, total_price=total_price, total_quantity=total_quantity)
+    return render_template('cart/cart.html', products_details=products_details, total_price=total_price, total_quantity=total_quantity)
 
 
 # Xóa sản phẩm
@@ -276,16 +271,16 @@ def update_quantity(product_id):
 
 @views.route("/dashboard", methods=["GET","POST"])
 def dashboard():
-    return render_template('admin_dash.html')
+    return render_template('admin/admin_dash.html')
 @views.route("/management_add", methods=["GET","POST"])
 def add_product():
-    return render_template('admin_add.html')
+    return render_template('admin/admin_add.html')
 @views.route("/management_list", methods=["GET","POST"])
 def list_product():
-    return render_template('admin_list.html')
+    return render_template('admin/admin_list.html')
 @views.route("/management_month", methods=["GET","POST"])
 def approve():
-    return render_template('admin_month.html')
+    return render_template('admin/admin_month.html')
 @views.route("/management_week", methods=["GET","POST"])
 def income():
-    return render_template('admin_week.html')
+    return render_template('admin/admin_week.html')
