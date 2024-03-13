@@ -11,7 +11,8 @@ from urllib.parse import quote_plus
 from urllib.parse import unquote_plus
 from flask_login import user_logged_in
 from flask import session
-
+from werkzeug.utils import secure_filename
+from flask import session, redirect, url_for
 views = Blueprint("views", __name__)
 
 # Kiểm tra đăng nhập
@@ -56,7 +57,17 @@ def shoemale_page():
 @views.route("/fashion_male", methods=["GET","POST"])
     # Thời trang nam
 def fashion_male():
-    return render_template('male/fashion_male.html')
+    men_products = []
+    women_products = []
+    products = Product.query.all()
+    for product in products:
+        details = Detail.query.filter_by(product_id=product.product_id).all()
+        for detail in details:
+            if detail.type_product == 'Nam_' or detail.type_product == 'Nam':
+                men_products.append((product,detail.type_product))
+            elif detail.type_product == 'Nữ_' or detail.type_product == 'Nữ':
+                women_products.append((product, detail.type_product))
+    return render_template('male/fashion_male.html',men_products=men_products,women_products=women_products)
 
 
 
@@ -104,8 +115,8 @@ def infomation(name_product):
         describes = detail.describe.split(';')
         extends = detail.extend.split(';')
         images = product.image.split(';')
-        other_products_Nam = Product.query.filter(Product.product_id != product.product_id, Product.product_id <= 10).limit(20).all()
-        other_products_Nu = Product.query.filter(Product.product_id != product.product_id, Product.product_id > 10, Product.product_id <= 20).limit(20).all()
+        other_products_Nam = Product.query.filter(Product.product_id != product.product_id, Product.product_id <= 10).limit(100).all()
+        other_products_Nu = Product.query.filter(Product.product_id != product.product_id, Product.product_id > 10, Product.product_id <= 20).limit(100).all()
         return render_template('info.html', product=product, detail=detail, colors=colors, sizes=sizes, describes=describes, extends=extends, images=images,other_products_Nam=other_products_Nam,other_products_Nu=other_products_Nu)
     else:
         return name_product
@@ -253,7 +264,6 @@ def order():
     return render_template('order.html')
 # Quantity
 @views.route('/update_quantity/<int:product_id>', methods=['POST'])
-@login_required
 def update_quantity(product_id):
     data = request.json
     quantity = data.get('quantity')
@@ -269,18 +279,160 @@ def update_quantity(product_id):
 
     return jsonify({"message": "Số lượng sản phẩm đã được cập nhật"}), 200
 
-@views.route("/dashboard", methods=["GET","POST"])
-def dashboard():
-    return render_template('admin/admin_dash.html')
-@views.route("/management_add", methods=["GET","POST"])
+
+@views.route("/management_add", methods=["GET", "POST"])
+@login_required
 def add_product():
+    if current_user.role != 'Admin':
+        flash("You do not have permission to access this page.", "error")
+        return redirect(url_for('user.login'))
+    if request.method == 'POST':
+        name_product = request.form['name_product']
+        price = request.form['price']
+        quantity = request.form['quantity']
+        images = request.files.getlist('image')
+
+        existing_product = Product.query.filter_by(name_product=name_product).first()
+        if existing_product:
+            flash("Product with the same name already exists in the database", category="error")
+            return render_template('admin/admin_add.html')
+
+        # Khởi tạo sản phẩm mới với cart_id mặc định là 1
+        new_product = Product(cart_id=1, name_product=name_product, price=price, quantity=quantity, image="")
+
+        image_filenames = []
+        for image in images:
+            if image:
+                image_filename = secure_filename(image.filename)
+                image.save(f'E:/Mew/Code/PYTHON/_Web_2HM_Shop/management/static/img/imgdatabase/{image_filename}')
+                image_filenames.append(image_filename)
+        # Lưu danh sách các tên file ảnh dưới dạng chuỗi, cách nhau bởi dấu ';'
+        new_product.image = ';'.join(image_filenames)
+        db.session.add(new_product)
+        try:
+            db.session.commit()
+            flash("Vui lòng thêm chi tiết sản phẩm!", "success")
+            return redirect(url_for('views.admin_detail', product_id=new_product.product_id))
+        except:
+            db.session.rollback()
+            flash("An error occurred. Product could not be added.", "error")
+    
     return render_template('admin/admin_add.html')
+
+
 @views.route("/management_list", methods=["GET","POST"])
+@login_required
 def list_product():
-    return render_template('admin/admin_list.html')
+    if current_user.role != 'Admin':
+        flash("You do not have permission to access this page.", "error")
+        return redirect(url_for('user.login'))
+    products = Product.query.filter_by(cart_id=1).all()
+    return render_template('admin/admin_list.html',products=products)
+# Sửa thông tin sản phẩm
+@views.route('/update_product/<int:product_id>', methods=['POST'])
+@login_required
+def update_product(product_id):
+    if current_user.role != 'Admin':
+        flash("You do not have permission to access this page.", "error")
+        return redirect(url_for('user.login'))
+    # Tìm sản phẩm cần cập nhật từ cơ sở dữ liệu
+    product = Product.query.get_or_404(product_id)
+
+    # Cập nhật thông tin sản phẩm từ dữ liệu gửi từ phía client
+    product.name_product = request.json.get('name_product', product.name_product)
+    product.price = request.json.get('price', product.price)
+    product.quantity = request.json.get('quantity', product.quantity)
+
+    # Lưu thay đổi vào cơ sở dữ liệu
+    db.session.commit()
+
+    # Trả về thông báo cập nhật thành công (hoặc có thể trả về JSON khác tùy ý)
+    return jsonify({'message': 'Product updated successfully'})
+# Xóa sản phẩm trong danh sách sản phẩm được quản lí 
+@views.route('/delete_product/<int:product_id>')
+@login_required
+def delete_product(product_id):
+    if current_user.role != 'Admin':
+        flash("You do not have permission to access this page.", "error")
+        return redirect(url_for('user.login'))
+    try:
+        # Xóa chi tiết sản phẩm từ bảng Detail trước
+        detail_to_delete = Detail.query.filter_by(product_id=product_id).first()
+        if detail_to_delete:
+            db.session.delete(detail_to_delete)
+            db.session.commit()
+
+        # Sau đó, xóa sản phẩm từ bảng Product
+        product_to_delete = Product.query.get(product_id)
+        if product_to_delete:
+            db.session.delete(product_to_delete)
+            db.session.commit()
+
+        flash("Xóa sản phẩm thành công!", "success")
+    except Exception as e:
+        db.session.rollback()
+        flash("Xóa sản phẩm không thành công: " + str(e), "error")
+
+    return redirect(url_for('views.list_product'))
+
 @views.route("/management_month", methods=["GET","POST"])
+@login_required
 def approve():
+    if current_user.role != 'Admin':
+        flash("You do not have permission to access this page.", "error")
+        return redirect(url_for('user.login'))
     return render_template('admin/admin_month.html')
-@views.route("/management_week", methods=["GET","POST"])
+from flask_login import current_user
+
+@views.route("/income", methods=["GET","POST"])
+@login_required
 def income():
-    return render_template('admin/admin_week.html')
+    if current_user.role != 'Admin':
+        flash("You do not have permission to access this page.", "error")
+        return redirect(url_for('user.login'))
+
+    all_products = Product.query.filter_by(cart_id=1).all()
+    all_orders = Product.query.filter(Product.cart_id != 1).all()
+
+    total_price = sum(float(product.quantity) * float(product.price) for product in all_products)
+    total_price_order = sum(float(product.quantity) * float(product.price) for product in all_orders)
+
+    return render_template('admin/income.html', total_price=total_price, total_price_order=total_price_order)
+
+@views.route("/admin_detail/<int:product_id>", methods=["GET", "POST"])
+@login_required
+def admin_detail(product_id):
+    if current_user.role != 'Admin':
+        flash("You do not have permission to access this page.", "error")
+        return redirect(url_for('user.login'))
+    if request.method == 'POST':
+        type_product = request.form['type_product']
+        color_product = request.form['color_product']
+        size_product = request.form['size_product']
+        producer = request.form['producer']
+        describe = request.form['describe']
+        extend = request.form['extend']
+        
+        if product_id:
+            existing_detail = Detail.query.filter_by(product_id=product_id).first()
+            if existing_detail:
+                    flash("Chi tiết sản phẩm cho sản phẩm này đã được thêm trước đó.", "error")
+            else:
+                new_detail = Detail(
+                    product_id=product_id,
+                    type_product=type_product,
+                    color_product=color_product,
+                    size_product=size_product,
+                    producer=producer,
+                    describe=describe,
+                    extend=extend
+                )
+                db.session.add(new_detail)
+                db.session.commit()
+                flash("Thêm chi tiết sản phẩm thành công!", "success")
+        else:
+                flash("Không tồn tại mã sản phẩm!", "error")
+
+    product = Product.query.get(product_id)
+    return render_template('admin/admin_detail.html', product_id=product_id,product=product)
+

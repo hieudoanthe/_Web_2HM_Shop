@@ -351,7 +351,7 @@
                             <!-- Nếu người dùng đã đăng nhập -->
                                 {% if current_user.user_name == "Admin" %}
                                 <!-- Nếu người dùng là admin, hiển thị nút hoặc liên kết "Chỉnh sửa" -->
-                                    <a href="{{ url_for('views.dashboard') }}">Chỉnh sửa</a>
+                                    <a href="{{ url_for('views.income') }}">Chỉnh sửa</a>
                                     <a href="{{ url_for('user.logout') }}">Đăng xuất</a>
                                 {% else %}
                                 <!-- Hiển thị nút hoặc liên kết "Đăng xuất" -->
@@ -563,10 +563,8 @@
         <div class="intro" style="position: relative;">
             <div class="_wrap" >
                 <div>
-                    <!-- <h1 style="color: white; font-weight: 600;">Tự tin tỏa sáng với phong cách của bạn</h1> -->
-                    <!-- <p style="color: #B82127; font-size: 30px;">“Để không ai có thể thay thế, bạn phải luôn luôn khác biệt”</p> -->
                     <div>
-                        <a href="http://127.0.0.1:5000/male_page">
+                        <a href="/male_page">
                             <div class="button">
                                 <div class="_main_button">
                                     <p>MUA ĐỒ NAM <i class="fa-solid fa-arrow-right"></i></p>
@@ -574,7 +572,7 @@
                             </div>
                         </a>
                         <br>
-                        <a href="">
+                        <a href="/female_page">
                             <div class="button">
                                 <div class="_main_button">
                                     <p>MUA ĐỒ NỮ <i class="fa-solid fa-arrow-right"></i></p>
@@ -613,7 +611,6 @@
             </div>
             <div class="image-slider">
                 {% for product, type_product in men_products %}
-                <!-- <a href="http://127.0.0.1:5000/infomation"> -->
                     <a href="{{ url_for('views.infomation', name_product=product.name_product|urlencode) }}">
                     <div class="image-item">
                         <div class="image">
