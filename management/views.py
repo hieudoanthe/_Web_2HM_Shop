@@ -5,7 +5,7 @@ from .import db
 import json
 from django.shortcuts import render
 from django.db.models import Q
-from management.models import Product, Detail, Cart
+from management.models import Product, Detail, Cart, Warehouse, TotalOrder
 from urllib.parse import quote
 from urllib.parse import quote_plus
 from urllib.parse import unquote_plus
@@ -396,6 +396,15 @@ def income():
 
     total_price = sum(float(product.quantity) * float(product.price) for product in all_products)
     total_price_order = sum(float(product.quantity) * float(product.price) for product in all_orders)
+
+    warehouse_item = Warehouse.query.first()
+    if warehouse_item is None:
+        warehouse_item = Warehouse(total_warehouse=total_price)
+        db.session.add(warehouse_item)
+    else:
+        warehouse_item.total_warehouse = total_price
+
+    db.session.commit()
 
     return render_template('admin/income.html', total_price=total_price, total_price_order=total_price_order)
 

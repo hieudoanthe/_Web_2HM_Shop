@@ -89,4 +89,4 @@ class TotalOrder(db.Model):
 class Warehouse(db.Model):
     warehouse_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     total_warehouse = db.Column(db.DECIMAL(precision=12, scale=2)) 
-    product_id = db.Column(db.Integer,db.ForeignKey('product.product_id'), nullable=False)
+    product_id = db.Column(db.Integer,db.ForeignKey('product.product_id'), nullable=True)
