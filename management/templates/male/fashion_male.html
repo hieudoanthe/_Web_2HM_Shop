@@ -48,7 +48,7 @@
                     class="fa-solid fa-chevron-down"></i></p>
         </div>
         <div class="navbar">
-            <a href="http://127.0.0.1:5000/home">
+            <a href="/home">
                 <div class="logo">
                     <div class="_logo">
                         <img src="../static/img/2H&M.gif" alt="">
@@ -58,7 +58,7 @@
             <div class="main">
                 <ul class="subnav">
                     <li>
-                        <a href="http://127.0.0.1:5000/male_page"><b>NAM</b></a>
+                        <a href="/male_page"><b>NAM</b></a>
                         <div class="sub_content">
                             <div class="content_link">
                                 <div class="content_1">
@@ -75,7 +75,7 @@
                                     <a href="" class="a_hover">Adilette</a>
                                 </div>
                                 <div class="content_2">
-                                    <a href="http://127.0.0.1:5000/shoemale_page" class="a_hover"><b>GIÀY</b></a>
+                                    <a href="/shoemale_page" class="a_hover"><b>GIÀY</b></a>
                                     <a href="" class="a_hover">Dòng sản phẩm Originals</a>
                                     <a href="" class="a_hover">Bóng đá</a>
                                     <a href="" class="a_hover">Chạy</a>
@@ -87,7 +87,7 @@
                                     <a href="" class="a_hover">Sportswear</a>
                                 </div>
                                 <div class="content_2">
-                                    <a href="http://127.0.0.1:5000/fashion_male" class="a_hover"><b>QUẦN ÁO</b></a>
+                                    <a href="/fashion_male" class="a_hover"><b>QUẦN ÁO</b></a>
                                     <a href="" class="a_hover">Áo phông & Áo polo</a>
                                     <a href="" class="a_hover">Áo Jersay</a>
                                     <a href="" class="a_hover">Áo hodie & Áo khoác</a>
@@ -148,7 +148,7 @@
                         </div>
                     </li>
                     <li>
-                        <a href="http://127.0.0.1:5000/female_page"><b>NỮ</b></a>
+                        <a href="/female_page"><b>NỮ</b></a>
                         <div class="sub_content">
                             <div class="content_link">
                                 <div class="content_1">
@@ -166,7 +166,7 @@
                                     <a href="" class="a_hover">STELLA MACCARTNEY</a>
                                 </div>
                                 <div class="content_2">
-                                    <a href="http://127.0.0.1:5000/shoefemale_page" class="a_hover"><b>GIÀY</b></a>
+                                    <a href="/shoefemale_page" class="a_hover"><b>GIÀY</b></a>
                                     <a href="" class="a_hover">Dòng sản phẩm Originals</a>
                                     <a href="" class="a_hover">Running</a>
                                     <a href="" class="a_hover">Tập luyện</a>
@@ -175,7 +175,7 @@
                                     <a href="" class="a_hover">Sportswear</a>
                                 </div>
                                 <div class="content_2">
-                                    <a href="http://127.0.0.1:5000/fashion_female" class="a_hover"><b>QUẦN ÁO</b></a>
+                                    <a href="/fashion_female" class="a_hover"><b>QUẦN ÁO</b></a>
                                     <a href="" class="a_hover">Áo phông & Áo không tay</a>
                                     <a href="" class="a_hover">Áo Nỉ</a>
                                     <a href="" class="a_hover">Áo hodie & Áo khoác</a>
@@ -232,7 +232,7 @@
                         </div>
                     </li>
                     <li>
-                        <a href="http://127.0.0.1:5000/kid_page"><b>TRẺ EM</b></a>
+                        <a href="/kid_page"><b>TRẺ EM</b></a>
                         <div class="sub_content">
                             <div class="content_link">
                                 <div class="content_1">
@@ -415,404 +415,76 @@
     </nav>
     <div class="container">
         <div class="row1">
+            {% for product, type_product in men_products %}
+            {% if product.product_id >= 2 and product.product_id <=5 %}
             <div class="myImage">
-                <div style="position: relative;">
-                    <img class="imgg"
-                        src="../static/img/product-1.jpg"
-                        alt="Ảnh mặc định">
-                    <p style="position: absolute;bottom: 20px;left: 5px;background-color: #fff;">1.000.000 <sup>đ</sup>
-                    </p>
-                </div>
+                <a href="{{ url_for('views.infomation', name_product=product.name_product) }}">
+                    <div style="position: relative;">
+                        <img class="imgg" src="../static/img/{{ product.image.split(';')[0] }}" alt="Ảnh mặc định">
+                        <p style="position: absolute;bottom: 20px;left: 5px;background-color: #fff;">{{product.price}}<sup>đ</sup>
+                        </p>
+                    </div>
+                </a>
                 <div class="list-img" style="display: none;list-style: none;z-index: 999;">
                     <img class="img1"
-                        src="../static/img/product-1.jpg"
+                        src="../static/img/{{ product.image.split(';')[1] }}"
                         alt="">
                     <img style="padding: 0 5px 0 10px;" class="img2"
-                        src="../static/img/product-2.jpg"
+                        src="../static/img/{{ product.image.split(';')[2] }}"
                         alt="">
                     <img style="padding: 0 10px 0 5px;" class="img3"
-                        src="../static/img/product-3.jpg"
+                        src="../static/img/{{ product.image.split(';')[3] }}"
                         alt="">
-
-
                 </div>
-                <p>ÁO TANK TOP JERSEY COTTON ONE BASKETBALL<br><span style="color: #868687;">Bóng rô</span><br><span
+                <p>{{product.name_product}}<br><span style="color: #868687;">2HM</span><br><span
                         style="color: #868687;">3 colours</span>&nbsp;• mới</p>
-            </div>
-            <div class="myImage">
-                <div style="position: relative;">
-                    <img class="imgg"
-                        src="../static/img/product-4.jpg"
-                        alt="Ảnh mặc định">
-                    <p style="position: absolute;bottom: 20px;left: 5px;background-color: #fff;">4.000.000 <sup>đ</sup>
-                    </p>
-                </div>
-                <div class="list-img" style="display: none;list-style: none;z-index: 999;">
-                    <img class="img1"
-                        src="../static/img/product-4.jpg"
-                        alt="">
-                    <img style="padding: 0 5px 0 10px;" class="img2"
-                        src="../static/img/product-5.jpg"
-                        alt="">
-                    <img style="padding: 0 10px 0 5px;" class="img3"
-                        src="../static/img/product-6.jpg"
-                        alt="">
-
-
-                </div>
-                <p>Áo Hoodie bóng rổ giả da lộn <br><span style="color: #868687;">Bóng rô</span><br><span
-                        style="color: #868687;">3 colours</span>&nbsp;• mới</p>
-            </div>
-            <div class="myImage">
-                <div style="position: relative;">
-                    <img class="imgg"
-                        src="../static/img/product-3.jpg"
-                        alt="Ảnh mặc định">
-                    <p style="position: absolute;bottom: 20px;left: 5px;background-color: #fff;">1.000.000 <sup>đ</sup>
-                    </p>
-                </div>
-                <div class="list-img" style="display: none;list-style: none;z-index: 999;">
-                    <img class="img1"
-                        src="../static/img/product-3.jpg"
-                        alt="">
-                    <img style="padding: 0 5px 0 10px;" class="img2"
-                        src="../static/img/product-2.jpg"
-                        alt="">
-                    <img style="padding: 0 10px 0 5px;" class="img3"
-                        src="../static/img/product-1.jpg"
-                        alt="">
-
-
-                </div>
-                <p>ÁO TANK TOP JERSEY COTTON ONE BASKETBALL<br><span style="color: #868687;">Bóng rô</span><br><span
-                        style="color: #868687;">3 colours</span>&nbsp;• mới</p>
-            </div>
-            <div class="myImage">
-                <div style="position: relative;">
-                    <img class="imgg"
-                        src="../static/img/product-7.jpg"
-                        alt="Ảnh mặc định">
-                    <p style="position: absolute;bottom: 20px;left: 5px;background-color: #fff;">800.000 <sup>đ</sup>
-                    </p>
-                </div>
-                <div class="list-img" style="display: none;list-style: none;z-index: 999;">
-                    <img class="img1"
-                        src="../static/img/product-7.jpg"
-                        alt="">
-                    <img style="padding: 0 5px 0 10px;" class="img2"
-                        src="../static/img/product-8.jpg"
-                        alt="">
-                    <img style="padding: 0 10px 0 5px;" class="img3"
-                        src="../static/img/product-9.jpg"
-                        alt="">
-                    <img class="img4"
-                        src="../static/img/product-27.jpg"
-                        alt="">
-
-                </div>
-                <p>QUẦN SHORT BLOCK ADIDAS PRO<br><span style="color: #868687;">Bóng rô</span><br><span
-                        style="color: #868687;">4 colours</span>&nbsp;• mới</p>
-            </div>
+                </div> 
+                {% endif %} 
+                {% endfor %}
         </div>
+       
         <div class="row2">
-            <div class="myImage">
-                <div style="position: relative;">
-                    <img class="imgg"
-                        src="../static/img/product-1.jpg"
-                        alt="Ảnh mặc định">
-                    <p style="position: absolute;bottom: 20px;left: 5px;background-color: #fff;">1.000.000 <sup>đ</sup>
-                    </p>
-                </div>
+            {% for product, type_product in men_products %}
+            {% if product.product_id >= 6 and product.product_id <= 9 %} <div class="myImage">
+                <a href="{{ url_for('views.infomation', name_product=product.name_product) }}">
+                    <div style="position: relative;">
+                        <img class="imgg" src="../static/img/{{ product.image.split(';')[0] }}" alt="Ảnh mặc định">
+                        <p style="position: absolute;bottom: 20px;left: 5px;background-color: #fff;">{{product.price}}<sup>đ</sup>
+                        </p>
+                    </div>
+                </a>
                 <div class="list-img" style="display: none;list-style: none;z-index: 999;">
-                    <img class="img1"
-                        src="../static/img/product-1.jpg"
-                        alt="">
-                    <img style="padding: 0 5px 0 10px;" class="img2"
-                        src="../static/img/product-2.jpg"
-                        alt="">
-                    <img style="padding: 0 10px 0 5px;" class="img3"
-                        src="../static/img/product-3.jpg"
-                        alt="">
-
-
+                    <img class="img1" src="../static/img/{{ product.image.split(';')[1] }}" alt="">
+                    <img style="padding: 0 5px 0 10px;" class="img2" src="../static/img/{{ product.image.split(';')[2] }}" alt="">
+                    <img style="padding: 0 10px 0 5px;" class="img3" src="../static/img/{{ product.image.split(';')[3] }}" alt="">
                 </div>
-                <p>ÁO TANK TOP JERSEY COTTON ONE BASKETBALL<br><span style="color: #868687;">Bóng rô</span><br><span
-                        style="color: #868687;">3 colours</span>&nbsp;• mới</p>
-            </div>
-            <div class="myImage">
-                <div style="position: relative;">
-                    <img class="imgg"
-                        src="../static/img/product-4.jpg"
-                        alt="Ảnh mặc định">
-                    <p style="position: absolute;bottom: 20px;left: 5px;background-color: #fff;">4.000.000 <sup>đ</sup>
-                    </p>
+                <p>{{product.name_product}}<br><span style="color: #868687;">2HM</span><br><span style="color: #868687;">3
+                        colours</span>&nbsp;• mới</p>
                 </div>
-                <div class="list-img" style="display: none;list-style: none;z-index: 999;">
-                    <img class="img1"
-                        src="../static/img/product-4.jpg"
-                        alt="">
-                    <img style="padding: 0 5px 0 10px;" class="img2"
-                        src="../static/img/product-5.jpg"
-                        alt="">
-                    <img style="padding: 0 10px 0 5px;" class="img3"
-                        src="../static/img/product-6.jpg"
-                        alt="">
-
-
-                </div>
-                <p>Áo Hoodie bóng rổ giả da lộn <br><span style="color: #868687;">Bóng rô</span><br><span
-                        style="color: #868687;">3 colours</span>&nbsp;• mới</p>
-            </div>
-            <div class="myImage">
-                <div style="position: relative;">
-                    <img class="imgg"
-                        src="../static/img/product-3.jpg"
-                        alt="Ảnh mặc định">
-                    <p style="position: absolute;bottom: 20px;left: 5px;background-color: #fff;">1.000.000 <sup>đ</sup>
-                    </p>
-                </div>
-                <div class="list-img" style="display: none;list-style: none;z-index: 999;">
-                    <img class="img1"
-                        src="../static/img/product-3.jpg"
-                        alt="">
-                    <img style="padding: 0 5px 0 10px;" class="img2"
-                        src="../static/img/product-2.jpg"
-                        alt="">
-                    <img style="padding: 0 10px 0 5px;" class="img3"
-                        src="../static/img/product-1.jpg"
-                        alt="">
-
-
-                </div>
-                <p>ÁO TANK TOP JERSEY COTTON ONE BASKETBALL<br><span style="color: #868687;">Bóng rô</span><br><span
-                        style="color: #868687;">3 colours</span>&nbsp;• mới</p>
-            </div>
-            <div class="myImage">
-                <div style="position: relative;">
-                    <img class="imgg"
-                        src="../static/img/product-7.jpg"
-                        alt="Ảnh mặc định">
-                    <p style="position: absolute;bottom: 20px;left: 5px;background-color: #fff;">800.000 <sup>đ</sup>
-                    </p>
-                </div>
-                <div class="list-img" style="display: none;list-style: none;z-index: 999;">
-                    <img class="img1"
-                        src="../static/img/product-7.jpg"
-                        alt="">
-                    <img style="padding: 0 5px 0 10px;" class="img2"
-                        src="../static/img/product-8.jpg"
-                        alt="">
-                    <img style="padding: 0 10px 0 5px;" class="img3"
-                        src="../static/img/product-9.jpg"
-                        alt="">
-                    <img class="img4"
-                        src="../static/img/product-27.jpg"
-                        alt="">
-
-                </div>
-                <p>QUẦN SHORT BLOCK ADIDAS PRO<br><span style="color: #868687;">Bóng rô</span><br><span
-                        style="color: #868687;">4 colours</span>&nbsp;• mới</p>
-            </div>
+                {% endif %}
+                {% endfor %}
         </div>
         <div class="row3">
+            {% for product, type_product in men_products %}
+            {% if product.product_id >= 9 and product.product_id <= 10 or product.product_id >= 21 and product.product_id <= 22  %} 
             <div class="myImage">
-                <div style="position: relative;">
-                    <img class="imgg"
-                        src="../static/img/product-1.jpg"
-                        alt="Ảnh mặc định">
-                    <p style="position: absolute;bottom: 20px;left: 5px;background-color: #fff;">1.000.000 <sup>đ</sup>
-                    </p>
-                </div>
+                <a href="{{ url_for('views.infomation', name_product=product.name_product)}}">
+                    <div style="position: relative;">
+                        <img class="imgg" src="../static/img/{{ product.image.split(';')[0] }}" alt="Ảnh mặc định">
+                        <p style="position: absolute;bottom: 20px;left: 5px;background-color: #fff;">{{product.price}}<sup>đ</sup>
+                        </p>
+                    </div>
+                </a>
                 <div class="list-img" style="display: none;list-style: none;z-index: 999;">
-                    <img class="img1"
-                        src="../static/img/product-1.jpg"
-                        alt="">
-                    <img style="padding: 0 5px 0 10px;" class="img2"
-                        src="../static/img/product-2.jpg"
-                        alt="">
-                    <img style="padding: 0 10px 0 5px;" class="img3"
-                        src="../static/img/product-3.jpg"
-                        alt="">
-
-
+                    <img class="img1" src="../static/img/{{ product.image.split(';')[1] }}" alt="">
+                    <img style="padding: 0 5px 0 10px;" class="img2" src="../static/img/{{ product.image.split(';')[2] }}" alt="">
+                    <img style="padding: 0 10px 0 5px;" class="img3" src="../static/img/{{ product.image.split(';')[3] }}" alt="">
                 </div>
-                <p>ÁO TANK TOP JERSEY COTTON ONE BASKETBALL<br><span style="color: #868687;">Bóng rô</span><br><span
-                        style="color: #868687;">3 colours</span>&nbsp;• mới</p>
+                <p>{{product.name_product}}<br><span style="color: #868687;">2HM</span><br><span style="color: #868687;">3
+                        colours</span>&nbsp;• mới</p>
             </div>
-            <div class="myImage">
-                <div style="position: relative;">
-                    <img class="imgg"
-                        src="../static/img/product-4.jpg"
-                        alt="Ảnh mặc định">
-                    <p style="position: absolute;bottom: 20px;left: 5px;background-color: #fff;">4.000.000 <sup>đ</sup>
-                    </p>
-                </div>
-                <div class="list-img" style="display: none;list-style: none;z-index: 999;">
-                    <img class="img1"
-                        src="../static/img/product-4.jpg"
-                        alt="">
-                    <img style="padding: 0 5px 0 10px;" class="img2"
-                        src="../static/img/product-5.jpg"
-                        alt="">
-                    <img style="padding: 0 10px 0 5px;" class="img3"
-                        src="../static/img/product-6.jpg"
-                        alt="">
-
-
-                </div>
-                <p>Áo Hoodie bóng rổ giả da lộn <br><span style="color: #868687;">Bóng rô</span><br><span
-                        style="color: #868687;">3 colours</span>&nbsp;• mới</p>
-            </div>
-            <div class="myImage">
-                <div style="position: relative;">
-                    <img class="imgg"
-                        src="../static/img/product-3.jpg"
-                        alt="Ảnh mặc định">
-                    <p style="position: absolute;bottom: 20px;left: 5px;background-color: #fff;">1.000.000 <sup>đ</sup>
-                    </p>
-                </div>
-                <div class="list-img" style="display: none;list-style: none;z-index: 999;">
-                    <img class="img1"
-                        src="../static/img/product-3.jpg"
-                        alt="">
-                    <img style="padding: 0 5px 0 10px;" class="img2"
-                        src="../static/img/product-2.jpg"
-                        alt="">
-                    <img style="padding: 0 10px 0 5px;" class="img3"
-                        src="../static/img/product-1.jpg"
-                        alt="">
-
-
-                </div>
-                <p>ÁO TANK TOP JERSEY COTTON ONE BASKETBALL<br><span style="color: #868687;">Bóng rô</span><br><span
-                        style="color: #868687;">3 colours</span>&nbsp;• mới</p>
-            </div>
-            <div class="myImage">
-                <div style="position: relative;">
-                    <img class="imgg"
-                        src="../static/img/product-7.jpg"
-                        alt="Ảnh mặc định">
-                    <p style="position: absolute;bottom: 20px;left: 5px;background-color: #fff;">800.000 <sup>đ</sup>
-                    </p>
-                </div>
-                <div class="list-img" style="display: none;list-style: none;z-index: 999;">
-                    <img class="img1"
-                        src="../static/img/product-7.jpg"
-                        alt="">
-                    <img style="padding: 0 5px 0 10px;" class="img2"
-                        src="../static/img/product-8.jpg"
-                        alt="">
-                    <img style="padding: 0 10px 0 5px;" class="img3"
-                        src="../static/img/product-9.jpg"
-                        alt="">
-                    <img class="img4"
-                        src="../static/img/product-27.jpg"
-                        alt="">
-
-                </div>
-                <p>QUẦN SHORT BLOCK ADIDAS PRO<br><span style="color: #868687;">Bóng rô</span><br><span
-                        style="color: #868687;">4 colours</span>&nbsp;• mới</p>
-            </div>
-        </div>
-        <div class="row4">
-            <div class="myImage">
-                <div style="position: relative;">
-                    <img class="imgg"
-                        src="../static/img/product-1.jpg"
-                        alt="Ảnh mặc định">
-                    <p style="position: absolute;bottom: 20px;left: 5px;background-color: #fff;">1.000.000 <sup>đ</sup>
-                    </p>
-                </div>
-                <div class="list-img" style="display: none;list-style: none;z-index: 999;">
-                    <img class="img1"
-                        src="../static/img/product-1.jpg"
-                        alt="">
-                    <img style="padding: 0 5px 0 10px;" class="img2"
-                        src="../static/img/product-2.jpg"
-                        alt="">
-                    <img style="padding: 0 10px 0 5px;" class="img3"
-                        src="../static/img/product-3.jpg"
-                        alt="">
-
-
-                </div>
-                <p>ÁO TANK TOP JERSEY COTTON ONE BASKETBALL<br><span style="color: #868687;">Bóng rô</span><br><span
-                        style="color: #868687;">3 colours</span>&nbsp;• mới</p>
-            </div>
-            <div class="myImage">
-                <div style="position: relative;">
-                    <img class="imgg"
-                        src="../static/img/product-4.jpg"
-                        alt="Ảnh mặc định">
-                    <p style="position: absolute;bottom: 20px;left: 5px;background-color: #fff;">4.000.000 <sup>đ</sup>
-                    </p>
-                </div>
-                <div class="list-img" style="display: none;list-style: none;z-index: 999;">
-                    <img class="img1"
-                        src="../static/img/product-4.jpg"
-                        alt="">
-                    <img style="padding: 0 5px 0 10px;" class="img2"
-                        src="../static/img/product-5.jpg"
-                        alt="">
-                    <img style="padding: 0 10px 0 5px;" class="img3"
-                        src="../static/img/product-6.jpg"
-                        alt="">
-
-
-                </div>
-                <p>Áo Hoodie bóng rổ giả da lộn <br><span style="color: #868687;">Bóng rô</span><br><span
-                        style="color: #868687;">3 colours</span>&nbsp;• mới</p>
-            </div>
-            <div class="myImage">
-                <div style="position: relative;">
-                    <img class="imgg"
-                        src="../static/img/product-3.jpg"
-                        alt="Ảnh mặc định">
-                    <p style="position: absolute;bottom: 20px;left: 5px;background-color: #fff;">1.000.000 <sup>đ</sup>
-                    </p>
-                </div>
-                <div class="list-img" style="display: none;list-style: none;z-index: 999;">
-                    <img class="img1"
-                        src="../static/img/product-3.jpg"
-                        alt="">
-                    <img style="padding: 0 5px 0 10px;" class="img2"
-                        src="../static/img/product-2.jpg"
-                        alt="">
-                    <img style="padding: 0 10px 0 5px;" class="img3"
-                        src="../static/img/product-1.jpg"
-                        alt="">
-
-
-                </div>
-                <p>ÁO TANK TOP JERSEY COTTON ONE BASKETBALL<br><span style="color: #868687;">Bóng rô</span><br><span
-                        style="color: #868687;">3 colours</span>&nbsp;• mới</p>
-            </div>
-            <div class="myImage">
-                <div style="position: relative;">
-                    <img class="imgg"
-                        src="../static/img/product-7.jpg"
-                        alt="Ảnh mặc định">
-                    <p style="position: absolute;bottom: 20px;left: 5px;background-color: #fff;">800.000 <sup>đ</sup>
-                    </p>
-                </div>
-                <div class="list-img" style="display: none;list-style: none;z-index: 999;">
-                    <img class="img1"
-                        src="../static/img/product-7.jpg"
-                        alt="">
-                    <img style="padding: 0 5px 0 10px;" class="img2"
-                        src="../static/img/product-8.jpg"
-                        alt="">
-                    <img style="padding: 0 10px 0 5px;" class="img3"
-                        src="../static/img/product-9.jpg"
-                        alt="">
-                    <img class="img4"
-                        src="../static/img/product-27.jpg"
-                        alt="">
-
-                </div>
-                <p>QUẦN SHORT BLOCK ADIDAS PRO<br><span style="color: #868687;">Bóng rô</span><br><span
-                        style="color: #868687;">4 colours</span>&nbsp;• mới</p>
-            </div>
+                {% endif %}
+                {% endfor %}
         </div>
     </div>
 

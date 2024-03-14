@@ -17,33 +17,23 @@
     <div class="book">
         <div class="book_left">
             <div class="menu">
-                <img style="width: 100%;" src="../static/images/2H&M.gif" alt="">
-            </div>
-            <div>
-                <li class="menu-item">
-                    <a href="http://127.0.0.1:5000/dashboard" class="menu-link menu-toggle"
-                        onclick="toggleDropdown('trangChuDropdown','doanhSoDropdown', 'accountSettingsDropdown')">
-                        <div class="Account Settings dash" style="text-transform: uppercase; font-size: 14px; padding-bottom: 10px; font-weight: bold;" >Dashboard</div>
-                    </a>
-                    <ul class="menu-sub" id="trangChuDropdown">
-                    </ul>
-                </li>
+                <img style="width: 100%;" src="../static/img/manage.png" alt="">
             </div>
             <div class="menu">
                 <li class="menu-item">
                     <a href="#" class="menu-link menu-toggle"
                         onclick="toggleDropdown('doanhSoDropdown', 'accountSettingsDropdown','trangChuDropdown')">
-                        <div style="text-transform: uppercase; font-size: 14px; padding-bottom: 10px; font-weight: bold;" class="Account Settings">Revenue management</div>
+                        <div style="text-transform: uppercase; font-size: 14px; padding-bottom: 10px; font-weight: bold;width: 200px;" class="Account Settings">Revenue management</div>
                     </a>
                     <ul class="menu-sub bg-cl" id="doanhSoDropdown">
                         <li class="menu-item">
                             <a href="javascript:void(0);" class="menu-link">
-                                <div style="margin-left: -50px; margin-top: -15px;" class="Account"><a style="font-size: 12px; font-weight: bold;" href="http://127.0.0.1:5000/management_week"><i style="font-size: 12px; margin-right: 10px;" class="fa-solid fa-money-check-dollar"></i>INCOME</a></div>
+                                <div style="margin-left: -50px; margin-top: -15px;" class="Account"><a style="font-size: 12px; font-weight: bold;" href="/income"><i style="font-size: 12px; margin-right: 10px;" class="fa-solid fa-money-check-dollar"></i>INCOME</a></div>
                             </a>
                         </li>
                         <li class="menu-item">
                             <a href="javascript:void(0);" class="menu-link">
-                                <div style="margin-left: -50px; margin-top: -15px;" class="Account"><a style="font-size: 12px; font-weight: bold;" href="http://127.0.0.1:5000/management_month"><i style="font-size: 15px; margin-right: 10px;"  class="fa-solid fa-person-circle-check"></i>APPROVE</a></div>
+                                <div style="margin-left: -50px; margin-top: -15px;" class="Account"><a style="font-size: 12px; font-weight: bold;" href="/management_month"><i style="font-size: 15px; margin-right: 10px;"  class="fa-solid fa-person-circle-check"></i>APPROVE</a></div>
                             </a>
                         </li>
                     </ul>
@@ -59,12 +49,12 @@
                     <ul class="menu-sub bg-cl" id="accountSettingsDropdown">
                         <li class="menu-item">
                             <a href="javascript:void(0);" class="menu-link">
-                                <div style="margin-left: -50px; margin-top: -15px;" class="Account"><a style="font-size: 12px; font-weight: bold;" href="http://127.0.0.1:5000/management_add"><i style="font-size: 12px; margin-right: 6px;" class="fa-brands fa-product-hunt"></i>ADD PRODUCT</a></div>
+                                <div style="margin-left: -50px; margin-top: -15px;" class="Account"><a style="font-size: 12px; font-weight: bold;" href="/management_add"><i style="font-size: 12px; margin-right: 6px;" class="fa-brands fa-product-hunt"></i>ADD PRODUCT</a></div>
                             </a>
                         </li>
                         <li class="menu-item">
                             <a href="javascript:void(0);" class="menu-link">
-                                <div style="margin-left: -50px; margin-top: -15px;" class="Account"><a style="font-size: 12px; font-weight: bold;" href="http://127.0.0.1:5000/management_list"><i style="font-size: 12px; margin-right: 6px;" class="fa-solid fa-clipboard-list"></i>LIST PRODUCT</a></div>
+                                <div style="margin-left: -50px; margin-top: -15px;" class="Account"><a style="font-size: 12px; font-weight: bold;" href="/management_list"><i style="font-size: 12px; margin-right: 6px;" class="fa-solid fa-clipboard-list"></i>LIST PRODUCT</a></div>
                             </a>
                         </li>
                     </ul>

@@ -17,25 +17,13 @@
     <div class="book">
         <div class="book_left" style="position: sticky; top: 0px;">
             <div class="menu">
-                <img style="width: 100%;" src="../static/images/2H&M.gif" alt="">
-            </div>
-            <div>
-                <li class="menu-item">
-                    <a href="http://127.0.0.1:5000/dashboard" class="menu-link menu-toggle"
-                        onclick="toggleDropdown('trangChuDropdown','doanhSoDropdown', 'accountSettingsDropdown')">
-                        <div class="Account Settings dash"
-                            style="text-transform: uppercase; font-size: 14px; padding-bottom: 10px; font-weight: bold;">
-                            Dashboard</div>
-                    </a>
-                    <ul class="menu-sub" id="trangChuDropdown">
-                    </ul>
-                </li>
+                <img style="width: 100%;" src="../static/img/manage.png" alt="">
             </div>
             <div class="menu">
                 <li class="menu-item">
                     <a href="#" class="menu-link menu-toggle"
                         onclick="toggleDropdown('doanhSoDropdown', 'accountSettingsDropdown','trangChuDropdown')">
-                        <div style="text-transform: uppercase; font-size: 14px; padding-bottom: 10px; font-weight: bold; width: 195px;"
+                        <div style="text-transform: uppercase; font-size: 14px; padding-bottom: 10px; font-weight: bold; width: 200px;"
                             class="Account Settings">Revenue management</div>
                     </a>
                     <ul class="menu-sub bg-cl" id="doanhSoDropdown">
@@ -43,7 +31,7 @@
                             <a href="javascript:void(0);" class="menu-link">
                                 <div style="margin-left: -50px; margin-top: -15px;" class="Account"><a
                                         style="font-size: 12px; font-weight: bold;"
-                                        href="http://127.0.0.1:5000/management_week"><i
+                                        href="/income"><i
                                             style="font-size: 12px; margin-right: 10px;"
                                             class="fa-solid fa-money-check-dollar"></i>INCOME</a></div>
                             </a>
@@ -52,7 +40,7 @@
                             <a href="javascript:void(0);" class="menu-link">
                                 <div style="margin-left: -50px; margin-top: -15px;" class="Account"><a
                                         style="font-size: 12px; font-weight: bold;"
-                                        href="http://127.0.0.1:5000/management_month"><i
+                                        href="/management_month"><i
                                             style="font-size: 15px; margin-right: 10px;"
                                             class="fa-solid fa-person-circle-check"></i>APPROVE</a></div>
                             </a>
@@ -74,7 +62,7 @@
                             <a href="javascript:void(0);" class="menu-link">
                                 <div style="margin-left: -50px; margin-top: -15px;" class="Account"><a
                                         style="font-size: 12px; font-weight: bold;"
-                                        href="http://127.0.0.1:5000/management_add"><i
+                                        href="/management_add"><i
                                             style="font-size: 12px; margin-right: 6px;"
                                             class="fa-brands fa-product-hunt"></i>ADD PRODUCT</a></div>
                             </a>
@@ -83,7 +71,7 @@
                             <a href="javascript:void(0);" class="menu-link">
                                 <div style="margin-left: -50px; margin-top: -15px;" class="Account"><a
                                         style="font-size: 12px; font-weight: bold;"
-                                        href="http://127.0.0.1:5000/management_list"><i
+                                        href="/management_list"><i
                                             style="font-size: 12px; margin-right: 6px;"
                                             class="fa-solid fa-clipboard-list"></i>LIST PRODUCT</a></div>
                             </a>
@@ -118,7 +106,7 @@
                                 </div>
                             </form>
                             <div style="z-index: 999;">
-                                <h6 style="opacity: .4;">Note that the currency is calculated in US dollars: $</h6>
+                                <h6 style="opacity: .4;">Note that the currency is calculated in VietNamDong: VNĐ</h6>
                             </div>
                         </div>
                     </div>
@@ -129,27 +117,31 @@
                     <div style="margin-top: 30px;" class="col-lg-4 col-md-6 col-sm-12 pb-1 search_product">
                         <div class="card product-item border-0 mb-4">
                             <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
-                                <img class="img-fluid w-100" style="height: 400px;" src="../static/images/{{ product.image }}" alt="">
+                                <img class="img-fluid w-100" style="height: 400px;" src="../static/img/{{ product.image.split(';')[0] }}" alt="">
                             </div>
                             <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
                                 <h6 class="text-truncate mb-3">
                                     <input
                                         style="text-align: center; border:1px dashed #CCCC99;border-left: none; border-right: none; height: 40px; width: 100%; outline-color: #CCCC99;"
-                                        type="text" id="productName-{{ product.id }}" name="productName" value="{{ product.productName }}"
-                                        onBlur="updateProductInfo({{ product.id }}, 'productName', this.value)">
+                                        type="text" id="productName-{{ product.product_id }}" name="name_product" value="{{ product.name_product }}"
+                                        onBlur="updateProductInfo({{ product.product_id }}, 'name_product', this.value)">
                                 </h6>
                                 <div class="d-flex justify-content-center">
                                     <h6>
                                         <input style="text-align: center; border-style: none; outline: none" type="number"
                                             id="price-{{ product.id }}" name="price" value="{{ product.price }}"
-                                            onBlur="updateProductInfo({{ product.id }}, 'price', this.value)">
+                                            onBlur="updateProductInfo({{ product.product_id }}, 'price', this.value)">
                                     </h6>
                                 </div>
+                                <div class="card-footer d-flex justify-content-between bg-light border">
+                                    <a href="{{ url_for('views.delete_product', product_id=product.product_id) }}" class="btn btn-sm text-dark p-0n delete-hover"><i
+                                            style="color: #CCCC99;" class="fa-solid fa-circle-minus"></i>&nbsp; Delete</a>
+                                    <input style="outline: none; width: 80px; text-align: center; border: 1px solid #CCCC99;" type="text"
+                                        id="quantity-{{ product.id }}" name="quantity" value="{{ product.quantity }}"
+                                        onBlur="updateProductInfo({{ product.product_id }}, 'quantity', this.value)">
+                                </div>
                             </div>
-                            <div class="card-footer d-flex justify-content-between bg-light border">
-                                <a href="{{ url_for('views.delete_product', product_id=product.id) }}" class="btn btn-sm text-dark p-0n delete-hover"><i style="color: #CCCC99;" class="fa-solid fa-circle-minus"></i>&nbsp; Delete</a>
-                                <input style="outline: none; width: 80px; text-align: center; border: 1px solid #CCCC99;" type="text" id="quantity-{{ product.id }}" name="quantity" value="{{ product.quantity }}" onBlur="updateProductInfo({{ product.id }}, 'quantity', this.value)">
-                            </div>
+                            
                         </div>
                     </div>
                     {% endfor %}
@@ -233,7 +225,7 @@
         var productFound = false;
 
         products.forEach(function (product) {
-            var productName = product.querySelector('[name="productName"]').value.trim().toLowerCase();
+            var productName = product.querySelector('[name="name_product"]').value.trim().toLowerCase();
 
             if (productName.startsWith(searchTerm)) {
                 // Nếu sản phẩm bắt đầu bằng từ khóa tìm kiếm, hiển thị nó

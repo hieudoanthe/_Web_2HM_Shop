@@ -23,25 +23,13 @@
     <div class="book">
         <div class="book_left">
             <div class="menu">
-                <img style="width: 100%;" src="../static/images/2H&M.gif" alt="">
-            </div>
-            <div>
-                <li class="menu-item">
-                    <a href="http://127.0.0.1:5000/dashboard" class="menu-link menu-toggle"
-                        onclick="toggleDropdown('trangChuDropdown','doanhSoDropdown', 'accountSettingsDropdown')">
-                        <div class="Account Settings dash"
-                            style="text-transform: uppercase; font-size: 14px; padding-bottom: 10px; font-weight: bold;">
-                            Dashboard</div>
-                    </a>
-                    <ul class="menu-sub" id="trangChuDropdown">
-                    </ul>
-                </li>
+                <img style="width: 100%;" src="../static/img/manage.png" alt="">
             </div>
             <div class="menu">
                 <li class="menu-item">
                     <a href="#" class="menu-link menu-toggle"
                         onclick="toggleDropdown('doanhSoDropdown', 'accountSettingsDropdown','trangChuDropdown')">
-                        <div style="text-transform: uppercase; font-size: 14px; padding-bottom: 10px; font-weight: bold;"
+                        <div style="text-transform: uppercase; font-size: 14px; padding-bottom: 10px; font-weight: bold;width: 200px;"
                             class="Account Settings">Revenue management</div>
                     </a>
                     <ul class="menu-sub bg-cl" id="doanhSoDropdown">
@@ -49,7 +37,7 @@
                             <a href="javascript:void(0);" class="menu-link">
                                 <div style="margin-left: -50px; margin-top: -15px;" class="Account"><a
                                         style="font-size: 12px; font-weight: bold;"
-                                        href="http://127.0.0.1:5000/management_week"><i
+                                        href="/income"><i
                                             style="font-size: 12px; margin-right: 10px;"
                                             class="fa-solid fa-money-check-dollar"></i>INCOME</a></div>
                             </a>
@@ -58,7 +46,7 @@
                             <a href="javascript:void(0);" class="menu-link">
                                 <div style="margin-left: -50px; margin-top: -15px;" class="Account"><a
                                         style="font-size: 12px; font-weight: bold;"
-                                        href="http://127.0.0.1:5000/management_month"><i
+                                        href="/management_month"><i
                                             style="font-size: 15px; margin-right: 10px;"
                                             class="fa-solid fa-person-circle-check"></i>APPROVE</a></div>
                             </a>
@@ -80,7 +68,7 @@
                             <a href="javascript:void(0);" class="menu-link">
                                 <div style="margin-left: -50px; margin-top: -15px;" class="Account"><a
                                         style="font-size: 12px; font-weight: bold;"
-                                        href="http://127.0.0.1:5000/management_add"><i
+                                        href="/management_add"><i
                                             style="font-size: 12px; margin-right: 6px;"
                                             class="fa-brands fa-product-hunt"></i>ADD PRODUCT</a></div>
                             </a>
@@ -89,7 +77,7 @@
                             <a href="javascript:void(0);" class="menu-link">
                                 <div style="margin-left: -50px; margin-top: -15px;" class="Account"><a
                                         style="font-size: 12px; font-weight: bold;"
-                                        href="http://127.0.0.1:5000/management_list"><i
+                                        href="/management_list"><i
                                             style="font-size: 12px; margin-right: 6px;"
                                             class="fa-solid fa-clipboard-list"></i>LIST PRODUCT</a></div>
                             </a>
@@ -135,26 +123,49 @@
                 {% endwith %}
             </div>
             <div style="display: flex; justify-content: space-between;">
-                <div style="width: 700px;" class="book_right-hoa">
-                    <form id="myForm" action="#" method="POST" enctype="multipart/form-data" onsubmit="return validateForm()">
-                        <div class="book_right-main">
-                            <label style="color: #CCCC66;" for="productName">NAME: </label>
-                            <input style="height: 100%; outline: none; border: 1px solid #CCCC99;" type="text" id="productName" name="productName" required>
+                <div class="book_right-hoa" style="width: 100%;">
+                    <form id="myForm" style="display: flex;justify-content: space-between;" action="#" method="POST" enctype="multipart/form-data" onsubmit="return validateForm()">
+                        <div>
+                            <div class="book_right-main">
+                                <label style="color: #CCCC66;" for="productName">NAME: </label>
+                                <input style="height: 100%; outline: none; border: 1px solid #CCCC99;" type="text" id="productName"
+                                    name="name_product" required oninput="updateTable()">
+                            </div>
+                        
+                            <div class="book_right-main">
+                                <label style="color: #CCCC66;" for="price">PRICE: </label>
+                                <input style="height: 100%; outline: none;  border: 1px solid #CCCC99;" type="number" id="price" name="price"
+                                    step="0.01" required oninput="updateTable()">
+                            </div>
+                        
+                            <div class="book_right-main">
+                                <label style="color: #CCCC66;" for="quantity">QUANTITY: </label>
+                                <input style="height: 100%; outline: none;  border: 1px solid #CCCC99;" type="text" id="quantity"
+                                    name="quantity" required oninput="updateTable()">
+                            </div>
+                        
+                            <div class="book_right-main">
+                                <label style="color: #CCCC66;" for="image">IMG PRODUCT: </label>
+                                <input style="height: 100%; outline: none;  border: 1px solid #CCCC99;" type="file" id="image" name="image"
+                                    multiple required oninput="updateTable()">
+                            </div>
                         </div>
-                
-                        <div class="book_right-main">
-                            <label style="color: #CCCC66;"  for="quantity">QUANTITY: </label>
-                            <input style="height: 100%; outline: none;  border: 1px solid #CCCC99;" type="text" id="quantity" name="quantity" required>
-                        </div>
-                
-                        <div class="book_right-main">
-                            <label style="color: #CCCC66;"  for="price">PRICE: </label>
-                            <input style="height: 100%; outline: none;  border: 1px solid #CCCC99;" type="number" id="price" name="price" step="0.01" required>
-                        </div>
-                
-                        <div class="book_right-main">
-                            <label style="color: #CCCC66;"  for="image">IMG PRODUCT: </label>
-                            <input style="height: 100%; outline: none;  border: 1px solid #CCCC99;" type="file" id="image" name="image" accept="image/*" required>
+                        <div style="margin-top: 20px;">
+                            <table id="productTable" border="1" style="width: 670px; margin-right: 15px;">
+                                <thead>
+                                    <tr style="width: 670px;">
+                                        <th style="width: 170px;">NAME</th>
+                                        <th style="width: 100px;">PRICE</th>
+                                        <th style="width: 100px;">QUANTITY</th>
+                                        <th style="width: 300px; display: flex;flex-wrap: wrap; margin-left: 1px;">IMG PRODUCT</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tableBody">
+                                </tbody>
+                            </table>
+                            <div class="book_submit" style="margin-top: 100px; float: right; margin-right: 10px;">
+                                <input type="submit" value="Save">
+                            </div>
                         </div>
                         <style>
                             .book_submit input{
@@ -166,32 +177,18 @@
                                 background-color: #CCCC66;
                             }
                         </style>
-                        <div class="book_submit" style="margin-top: 40px; float: right;">
-                            <input type="submit" value="Save">
-                        </div>
-                        <p class="warning"
-                            style="background-color: #FF6347; text-align: center; padding: 8px 0; text-transform: uppercase; margin-top: 200px; color: white; font-size: 12px; font-weight: bold;">
-                            <a style="color: white;" href="http://127.0.0.1:5000/management_list">Return to MANAGE PRODUCTS - List!</a>
-                        </p>
+                        
+                            
                     </form>
-                </div>
-                <!-- <div>
-                    <img style="width: 700px; object-fit: cover;" src="../static/images/2H&M_LOGO.png" alt="">
-                </div> -->
-                <div style=" margin-right: -18px;">
-                    <img style="width: 600px; height: 500px; object-fit: cover;" src="../static/img/cat-1.jpg" alt="">
+                    <p class="warning"
+                        style="background-color: #FF6347; text-align: center; padding: 8px 0; text-transform: uppercase; margin-top: 100px; color: white; font-size: 12px; font-weight: bold;">
+                        <a style="color: white;" href="/management_list">Return to MANAGE PRODUCTS - List!</a>
+                    </p>
                 </div>
             </div>
         </div>
     </div>
 </body>
-<script>
-    $(document).ready(function () {
-        $('.alert .close').click(function () {
-            $(this).parent().fadeOut('slow');
-        });
-    });
-</script>
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
     integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
     crossorigin="anonymous"></script>
@@ -201,4 +198,40 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 <script src="../static/js/p.js"></script>
+<script>
+    function updateTable() {
+        // Lấy giá trị từ các trường input
+        var productName = document.getElementById("productName").value;
+        var price = document.getElementById("price").value;
+        var quantity = document.getElementById("quantity").value;
+        var images = document.getElementById("image").files;
+
+        // Lấy thẻ tbody của bảng
+        var tableBody = document.getElementById("tableBody");
+
+        // Xóa nội dung cũ của bảng
+        tableBody.innerHTML = "";
+
+        // Tạo một hàng mới
+        var newRow = tableBody.insertRow();
+
+        // Tạo các ô mới trong hàng với các giá trị từ input fields
+        var cell1 = newRow.insertCell();
+        cell1.appendChild(document.createTextNode(productName));
+
+        var cell2 = newRow.insertCell();
+        cell2.appendChild(document.createTextNode(price));
+
+        var cell3 = newRow.insertCell();
+        cell3.appendChild(document.createTextNode(quantity));
+
+        var cell4 = newRow.insertCell();
+        for (var i = 0; i < images.length; i++) {
+            var image = document.createElement("img");
+            image.src = URL.createObjectURL(images[i]);
+            image.height = 50;
+            cell4.appendChild(image);
+        }
+    }
+</script>
 </html>
