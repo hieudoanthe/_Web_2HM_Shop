@@ -345,7 +345,22 @@
                     <ul class="help_ul">
                         <li><a href="">Trợ giúp</a></li>
                         <li><a href="">Trình theo dõi đơn hàng</a></li>
-                        <li><a href="">Đăng ký hội viên</a></li>
+                        <li>
+                            {% if current_user.is_authenticated %}
+                            <!-- Nếu người dùng đã đăng nhập -->
+                                {% if current_user.user_name == "Admin" %}
+                                <!-- Nếu người dùng là admin, hiển thị nút hoặc liên kết "Chỉnh sửa" -->
+                                    <a href="{{ url_for('views.dashboard') }}">Chỉnh sửa</a>
+                                    <a href="{{ url_for('user.logout') }}">Đăng xuất</a>
+                                {% else %}
+                                <!-- Hiển thị nút hoặc liên kết "Đăng xuất" -->
+                                    <a href="{{ url_for('user.logout') }}">Đăng xuất</a>
+                                {% endif %}
+                            {% else %}
+                                <!-- Nếu người dùng chưa đăng nhập, hiển thị nút hoặc liên kết "Đăng nhập" -->
+                                <a href="{{ url_for('user.login') }}">Đăng nhập</a>
+                            {% endif %}
+                        </li>
                         <li class="language_select">
                             <i class="fa-solid fa-chevron-down"></i>
                             <div class="_language_change">
