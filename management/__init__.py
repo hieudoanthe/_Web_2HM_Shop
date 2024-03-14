@@ -1,3 +1,5 @@
+# __init__.py
+
 from flask import Flask
 import os
 from dotenv import load_dotenv
@@ -39,6 +41,10 @@ def create_app():
         # Tạo các bảng trong cơ sở dữ liệu (nếu chưa tồn tại)
         db.create_all()
         print("OK!")
+
+        # Thêm dữ liệu mẫu
+        from .seed import seed_data
+        seed_data()
 
     # Import các blueprint và model trong create_app để tránh circular import
     from management.user import user

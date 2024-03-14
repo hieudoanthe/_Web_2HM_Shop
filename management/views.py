@@ -41,7 +41,7 @@ def home():
     return render_template("index.html",total_quantity=total_quantity,men_products=men_products, women_products=women_products,first_images=first_images, user=current_user if current_user.is_authenticated else None)
 def get_first_image(image):
     if image:
-        image_list = image.split(';')
+        image_list = image.split(',')
         return image_list[0]
     return None
 
@@ -110,11 +110,11 @@ def infomation(name_product):
         detail = Detail.query.filter_by(product_id=product.product_id).first()
         detail.describe = detail.describe.replace('\n','<br>')
         detail.extend = detail.extend.replace('\n','<br>')
-        colors = detail.color_product.split(';')
-        sizes = detail.size_product.split(';')
-        describes = detail.describe.split(';')
-        extends = detail.extend.split(';')
-        images = product.image.split(';')
+        colors = detail.color_product.split(',')
+        sizes = detail.size_product.split(',')
+        describes = detail.describe.split('_')
+        extends = detail.extend.split('_')
+        images = product.image.split(',')
         other_products_Nam = Product.query.filter(Product.product_id != product.product_id, Product.product_id <= 10).limit(100).all()
         other_products_Nu = Product.query.filter(Product.product_id != product.product_id, Product.product_id > 10, Product.product_id <= 20).limit(100).all()
         return render_template('info.html', product=product, detail=detail, colors=colors, sizes=sizes, describes=describes, extends=extends, images=images,other_products_Nam=other_products_Nam,other_products_Nu=other_products_Nu)
@@ -144,7 +144,7 @@ def add_to_cart(product_id):
     cart = Cart.query.filter_by(user_id=current_user.user_id).first()
 
     # Tách chuỗi ảnh thành một danh sách các ảnh
-    image_list = product.image.split(';')
+    image_list = product.image.split(',')
 
     # Lấy ảnh đầu tiên từ danh sách
     first_image = image_list[0] if image_list else None
@@ -298,7 +298,7 @@ def add_product():
             return render_template('admin/admin_add.html')
 
         # Khởi tạo sản phẩm mới với cart_id mặc định là 1
-        new_product = Product(cart_id=1, name_product=name_product, price=price, quantity=quantity, image="")
+        new_product = Product(cart_id=1, name_product=name_product, price=price, quantity=quantity, image="", auto_imei=None)
 
         image_filenames = []
         for image in images:
@@ -307,7 +307,7 @@ def add_product():
                 image.save(f'E:/Mew/Code/PYTHON/_Web_2HM_Shop/management/static/img/imgdatabase/{image_filename}')
                 image_filenames.append(image_filename)
         # Lưu danh sách các tên file ảnh dưới dạng chuỗi, cách nhau bởi dấu ';'
-        new_product.image = ';'.join(image_filenames)
+        new_product.image = ','.join(image_filenames)
         db.session.add(new_product)
         try:
             db.session.commit()

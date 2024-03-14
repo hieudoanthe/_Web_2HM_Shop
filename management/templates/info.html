@@ -649,7 +649,7 @@
                     <a href="{{ url_for('views.infomation', name_product=other_product.name_product) }}">
                         <div class="image-item">
                             <div class="image">
-                                <img src="../static/img/{{ other_product.image.split(';')[0] }}"
+                                <img src="../static/img/{{ other_product.image.split(',')[0] }}"
                                     alt="" />
                                 <p>{{other_product.price}}<sup>đ</sup></p>
                             </div>
